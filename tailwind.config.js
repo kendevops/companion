@@ -53,7 +53,7 @@ module.exports = {
         },
         // Custom brand colors based on the shared design
         brand: {
-          blue: "#4169F0", // The blue used in the button from your screenshot
+          blue: "#3170F3", // The blue used in the button from your screenshot
           softGold: "#E6D4A5", // For the soft yellow/gold accents in the illustration
           green: "#5D8060", // For the green accents in the illustration
           neutral: "#F5F5F5", // For the light background
