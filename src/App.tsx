@@ -14,7 +14,7 @@ import RegisterPage from "@/pages/auth/register";
 // import BuyerLayout from "@/components/layout/buyer/BuyerLayout";
 
 // Main pages for each role
-import LandingPage from "@/pages/Landing";
+import LandingPage from "@/pages/landing";
 // import AdminDashboard from "@/pages/admin/dashboard";
 // import SellerDashboard from "@/pages/seller/dashboard";
 // import BuyerDashboard from "@/pages/buyer/dashboard";
