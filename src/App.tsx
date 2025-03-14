@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "sonner";
 
 // Auth pages
-// import LoginPage from "@/pages/auth/login";
+import LoginPage from "@/pages/auth/Login";
 import RegisterPage from "@/pages/auth/register";
 // import ForgotPasswordPage from "@/pages/auth/forgot-password";
 
@@ -14,7 +14,7 @@ import RegisterPage from "@/pages/auth/register";
 // import BuyerLayout from "@/components/layout/buyer/BuyerLayout";
 
 // Main pages for each role
-// import LandingPage from "@/pages/Landing";
+import LandingPage from "@/pages/Landing";
 // import AdminDashboard from "@/pages/admin/dashboard";
 // import SellerDashboard from "@/pages/seller/dashboard";
 // import BuyerDashboard from "@/pages/buyer/dashboard";
@@ -28,8 +28,8 @@ const App: React.FC = () => {
       <BrowserRouter>
         <Routes>
           {/* Public Routes */}
-          <Route path="/" element={<RegisterPage />} />
-          {/* <Route path="/login" element={<LoginPage />} /> */}
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           {/* <Route path="/forgot-password" element={<ForgotPasswordPage />} /> */}
 
