@@ -14,6 +14,8 @@ export interface User {
     role: UserRole;
     createdAt: string;
     updatedAt: string;
+    profilePictures?: string[];
+
 }
 
 // Admin specific fields

@@ -38,7 +38,7 @@ const registerSchema = z.object({
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
 interface RegisterFormProps {
-  defaultRole?: UserRole;
+  defaultRole?: UserRole.BUYER;
   onSubmit: (data: RegisterFormValues) => void;
 }
 
