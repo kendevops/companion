@@ -20,6 +20,9 @@ const LandingPage: React.FC = () => {
       <header className="border-b">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center">
+            <div className="mr-2">
+              <img src="/arta.svg" alt="Logo" />
+            </div>
             <h1 className="text-2xl font-bold">Companion</h1>
 
             <nav className="hidden md:flex ml-10 space-x-6">
@@ -300,7 +303,7 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* CTA */}
-      <section className="py-20 bg-brand-blue text-white">
+      <section className="py-20 bg-brand-blue text-black">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-6">Ready to Get Started?</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
@@ -312,7 +315,7 @@ const LandingPage: React.FC = () => {
               <Button
                 size="lg"
                 variant="secondary"
-                className="w-full sm:w-auto"
+                className="w-full sm:w-auto cursor-pointer"
               >
                 Find Services
               </Button>
@@ -321,7 +324,7 @@ const LandingPage: React.FC = () => {
               <Button
                 size="lg"
                 variant="outline"
-                className="bg-transparent border-white text-white hover:bg-white/10 w-full sm:w-auto"
+                className="bg-[#3170F3] border-white text-white hover:bg-[#3170F3]/90 w-full sm:w-auto cursor-pointer"
               >
                 Become a Provider
               </Button>

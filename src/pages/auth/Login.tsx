@@ -91,21 +91,23 @@ const LoginPage: React.FC = () => {
   return (
     <div className="flex min-h-screen bg-white">
       {/* Left Side - Image */}
-      <div className="hidden md:block md:w-1/2 lg:w-7/12 relative">
+      <div className="hidden md:block md:w-1/2 lg:w-6/12 relative">
         <div className="absolute inset-0 rounded-r-3xl overflow-hidden">
-          <img
-            src={companionImage}
-            alt="Companion landscape"
-            className="h-full w-full object-cover"
-          />
+          <div className="w-250 h-full mx-5 rounded-4xl overflow-hidden">
+            <img
+              src={companionImage}
+              alt="Companion landscape"
+              className="h-full w-full object-cover"
+            />
+          </div>
           <div className="absolute inset-0 flex items-center justify-center">
-            <h1 className="text-5xl font-medium text-white/90">COMPANION</h1>
+            <h1 className="text-5xl font-medium text-white">ARTA</h1>
           </div>
         </div>
       </div>
 
       {/* Right Side - Form */}
-      <div className="w-full md:w-1/2 lg:w-5/12 flex items-center justify-center p-8">
+      <div className="w-full md:w-1/2 lg:w-6/12 flex items-center justify-center p-8">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
             <h1 className="text-2xl font-medium mb-2">Welcome back</h1>
