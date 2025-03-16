@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -192,7 +191,7 @@ const LoginPage: React.FC = () => {
 
               <Button
                 type="submit"
-                className="w-full bg-brand-blue hover:bg-brand-blue/90"
+                className="w-full bg-[#3170F3] hover:bg-[#3170F3]/90 cursor-pointer"
               >
                 Sign in
               </Button>
