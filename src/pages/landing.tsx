@@ -9,61 +9,22 @@ import {
   Star,
   ChevronDown,
 } from "lucide-react";
-import Dating from "@/assets/images/international-dating.jpg";
-
+import Dating from "@/assets/images/dinner.jpg";
 import { Button } from "@/components/ui/button";
 
+import girl1 from "@/assets/images/girl1.jpg";
+import girl3 from "@/assets/images/girl3.jpg";
+import girl4 from "@/assets/images/girl4.jpg";
+import girl5 from "@/assets/images/girl5.jpg";
+import Navbar from "@/components/shared/NavBar";
+
 const LandingPage: React.FC = () => {
+  const images = [girl1, girl3, girl4, girl5];
+
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Navigation */}
-      <header className="border-b">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center">
-            <div className="mr-2">
-              <img src="/arta.svg" alt="Logo" />
-            </div>
-            <h1 className="text-2xl font-bold">Companion</h1>
-
-            <nav className="hidden md:flex ml-10 space-x-6">
-              <a
-                href="#services"
-                className="text-sm font-medium text-gray-600 hover:text-gray-900"
-              >
-                Services
-              </a>
-              <a
-                href="#how-it-works"
-                className="text-sm font-medium text-gray-600 hover:text-gray-900"
-              >
-                How It Works
-              </a>
-              <a
-                href="#testimonials"
-                className="text-sm font-medium text-gray-600 hover:text-gray-900"
-              >
-                Testimonials
-              </a>
-              <a
-                href="#pricing"
-                className="text-sm font-medium text-gray-600 hover:text-gray-900"
-              >
-                Pricing
-              </a>
-            </nav>
-          </div>
-
-          <div className="flex items-center space-x-3">
-            <Link to="/login">
-              <Button variant="outline">Sign In</Button>
-            </Link>
-            <Link to="/register">
-              <Button>Get Started</Button>
-            </Link>
-          </div>
-        </div>
-      </header>
-
+      {/* Navbar */}
+      <Navbar />
       {/* Hero Section */}
       <section className="relative py-20 bg-gradient-to-br from-brand-blue/10 to-white">
         <div className="container mx-auto px-4">
@@ -79,7 +40,7 @@ const LandingPage: React.FC = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link to="/register?role=buyer">
-                  <Button size="lg" className="w-full sm:w-auto">
+                  <Button size="lg" className="w-full sm:w-auto cursor-pointer">
                     Find Services
                   </Button>
                 </Link>
@@ -87,7 +48,7 @@ const LandingPage: React.FC = () => {
                   <Button
                     size="lg"
                     variant="outline"
-                    className="w-full sm:w-auto"
+                    className="w-full sm:w-auto cursor-pointer"
                   >
                     Become a Provider
                   </Button>
@@ -96,12 +57,16 @@ const LandingPage: React.FC = () => {
 
               <div className="mt-8 flex items-center">
                 <div className="flex -space-x-2">
-                  {[1, 2, 3, 4].map((i) => (
+                  {images.map((img, index) => (
                     <div
-                      key={i}
+                      key={index}
                       className="w-8 h-8 rounded-full bg-gray-200 border-2 border-white flex items-center justify-center overflow-hidden"
                     >
-                      <span className="text-xs font-medium">{i}</span>
+                      <img
+                        src={img}
+                        alt={`Avatar ${index + 1}`}
+                        className="w-full h-full object-cover"
+                      />
                     </div>
                   ))}
                 </div>
