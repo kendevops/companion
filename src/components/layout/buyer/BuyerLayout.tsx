@@ -88,7 +88,7 @@ const BuyerLayout: React.FC = () => {
                       to={link.href}
                       className={`flex items-center py-5 border-b-2 ${
                         isActive
-                          ? "border-brand-blue text-brand-blue"
+                          ? "border-[#3170F3] text-[#3170F3]"
                           : "border-transparent text-gray-600 hover:text-gray-900"
                       }`}
                     >
