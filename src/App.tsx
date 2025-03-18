@@ -6,7 +6,7 @@ import { Toaster } from "sonner";
 
 // Auth pages
 import LoginPage from "@/pages/auth/Login";
-import RegisterPage from "@/pages/auth/register";
+import RegisterPage from "@/pages/auth/Register";
 // import ForgotPasswordPage from "@/pages/auth/forgot-password";
 
 // Main layouts for different roles
@@ -15,7 +15,7 @@ import SellerLayout from "@/components/layout/seller/SellerLayout";
 import BuyerLayout from "@/components/layout/buyer/BuyerLayout";
 
 // Main pages for each role
-import LandingPage from "@/pages/landing";
+import LandingPage from "@/pages/Landing";
 import AdminDashboard from "@/pages/admin/Dashboard";
 import SellerDashboard from "@/pages/seller/Dashboard";
 import BuyerDashboard from "@/pages/buyer/Dashboard";
