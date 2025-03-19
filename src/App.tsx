@@ -20,6 +20,7 @@ import AdminDashboard from "@/pages/admin/Dashboard";
 import SellerDashboard from "@/pages/seller/Dashboard";
 import BuyerDashboard from "@/pages/buyer/Dashboard";
 import SellerDetail from "./pages/buyer/SellerDetails";
+import BuyerServices from "./pages/buyer/Service";
 
 // Create a client for React Query
 const queryClient = new QueryClient();
@@ -67,7 +68,7 @@ const App: React.FC = () => {
           <Route path="/buyer" element={<BuyerLayout />}>
             <Route index element={<Navigate to="/buyer/dashboard" replace />} />
             <Route path="dashboard" element={<BuyerDashboard />} />
-            {/* <Route path="services" element={<BuyerServices />} /> */}
+            <Route path="services" element={<BuyerServices />} />
             <Route path="sellers/:id" element={<SellerDetail />} />
             <Route path="purchases" element={<div>My Purchases</div>} />
             <Route path="favorites" element={<div>My Favorites</div>} />
