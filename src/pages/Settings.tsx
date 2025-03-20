@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   //   User,
   Shield,
-  CreditCard,
+  //   CreditCard,
   //   Mail,
   //   Phone,
   //   Key,
@@ -148,9 +148,10 @@ const AccountSettings = () => {
   return (
     <div className="container mx-auto max-w-4xl py-8">
       <h1 className="text-3xl font-bold mb-4">Account</h1>
-      <p className="text-muted-foreground mb-8">
-        {user?.name}, {user?.email}
-      </p>
+      <div className="flex gap-2 mb-8">
+        <p className="text-black">{user?.name},</p>
+        <p className="text-muted-foreground">{user?.email}</p>
+      </div>
 
       <div className="space-y-8">
         {/* Personal Info Section */}
@@ -205,7 +206,12 @@ const AccountSettings = () => {
           <div className="mb-6">
             <div className="flex justify-between items-center mb-1">
               <h3 className="font-medium">Email address</h3>
-              <Button variant="ghost" size="sm" disabled>
+              <Button
+                variant="ghost"
+                size="sm"
+                disabled
+                className="cursor-not-allowed"
+              >
                 Edit
               </Button>
             </div>
@@ -284,7 +290,7 @@ const AccountSettings = () => {
         </div>
 
         {/* Payment & Payouts */}
-        <div className="bg-white rounded-xl shadow-sm p-6">
+        {/* <div className="bg-white rounded-xl shadow-sm p-6">
           <div className="flex items-center mb-6">
             <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mr-4">
               <CreditCard className="h-6 w-6 text-gray-600" />
@@ -305,7 +311,7 @@ const AccountSettings = () => {
           <Button variant="outline" className="mt-4">
             View payment details
           </Button>
-        </div>
+        </div> */}
       </div>
 
       {/* Legal Name Modal */}
