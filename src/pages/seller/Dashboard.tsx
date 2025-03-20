@@ -8,6 +8,7 @@ import {
   TrendingUp,
   ChevronRight,
   PlusCircle,
+  Calendar,
 } from "lucide-react";
 
 import {
@@ -29,6 +30,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { PurchaseStatus } from "@/types";
+import { formatDate } from "@/lib/utils";
 
 // Mock data
 const mockStats = {
@@ -80,6 +82,11 @@ const SellerDashboard: React.FC = () => {
     (mockStats.completedRequests / mockStats.totalRequests) * 100
   );
 
+  // Count pending requests
+  const pendingRequestsCount = mockRecentRequests.filter(
+    (r) => r.status === PurchaseStatus.PENDING
+  ).length;
+
   return (
     <div className="space-y-6">
       {/* Dashboard Header */}
@@ -91,9 +98,12 @@ const SellerDashboard: React.FC = () => {
           </p>
         </div>
         <div className="mt-4 md:mt-0">
-          <Button>
+          <Link
+            to="/seller/services"
+            className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 cursor-pointer"
+          >
             <PlusCircle className="mr-2 h-4 w-4" /> Add New Service
-          </Button>
+          </Link>
         </div>
       </div>
 
@@ -177,16 +187,10 @@ const SellerDashboard: React.FC = () => {
           <div>
             <CardTitle>Recent Requests</CardTitle>
             <CardDescription>
-              You have{" "}
-              {
-                mockRecentRequests.filter(
-                  (r) => r.status === PurchaseStatus.PENDING
-                ).length
-              }{" "}
-              pending requests
+              You have {pendingRequestsCount} pending requests
             </CardDescription>
           </div>
-          <Link to="/seller/requests">
+          <Link to="/seller/bookings?status=all">
             <Button variant="ghost" className="text-sm">
               View All <ChevronRight className="ml-1 h-4 w-4" />
             </Button>
@@ -227,12 +231,69 @@ const SellerDashboard: React.FC = () => {
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
-                    {new Date(request.date).toLocaleDateString()}
+                    {formatDate(request.date)}
                   </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
+        </CardContent>
+      </Card>
+
+      {/* Upcoming Bookings */}
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div>
+            <CardTitle>Upcoming Bookings</CardTitle>
+            <CardDescription>Your scheduled appointments</CardDescription>
+          </div>
+          <Link to="/seller/bookings?status=upcoming">
+            <Button variant="ghost" className="text-sm">
+              View All <ChevronRight className="ml-1 h-4 w-4" />
+            </Button>
+          </Link>
+        </CardHeader>
+        <CardContent>
+          {mockRecentRequests.filter(
+            (request) => request.status === PurchaseStatus.ACCEPTED
+          ).length > 0 ? (
+            <div className="space-y-4">
+              {mockRecentRequests
+                .filter((request) => request.status === PurchaseStatus.ACCEPTED)
+                .map((booking) => (
+                  <div
+                    key={booking.id}
+                    className="flex items-center p-3 bg-gray-50 rounded-lg"
+                  >
+                    <div className="h-10 w-10 rounded-full bg-blue-100 mr-4 flex items-center justify-center">
+                      <Calendar className="h-5 w-5 text-blue-600" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex justify-between">
+                        <h4 className="font-medium">{booking.service}</h4>
+                        <span className="text-sm text-muted-foreground">
+                          ${booking.amount.toFixed(2)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center mt-1">
+                        <span className="text-sm text-muted-foreground">
+                          with {booking.buyerName}
+                        </span>
+                        <span className="text-xs">
+                          {formatDate(booking.date)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <p className="text-muted-foreground">
+                No upcoming bookings scheduled
+              </p>
+            </div>
+          )}
         </CardContent>
       </Card>
 
