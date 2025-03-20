@@ -21,6 +21,9 @@ import SellerDashboard from "@/pages/seller/Dashboard";
 import BuyerDashboard from "@/pages/buyer/Dashboard";
 import SellerDetail from "./pages/buyer/SellerDetails";
 import BuyerServices from "./pages/buyer/Service";
+import SellerBookings from "./pages/seller/Bookings";
+import AccountSettings from "@/pages/Settings";
+
 
 // Create a client for React Query
 const queryClient = new QueryClient();
@@ -53,8 +56,10 @@ const App: React.FC = () => {
             />
             <Route path="dashboard" element={<SellerDashboard />} />
             <Route path="profile" element={<div>Seller Profile</div>} />
+            <Route path="bookings" element={<SellerBookings />} />
             <Route path="services" element={<div>Services</div>} />
             <Route path="earnings" element={<div>Earnings</div>} />
+            <Route path="settings" element={<AccountSettings />} />
           </Route>
 
           {/* Buyer Routes - Protected */}
@@ -73,7 +78,7 @@ const App: React.FC = () => {
             <Route path="purchases" element={<div>My Purchases</div>} />
             <Route path="favorites" element={<div>My Favorites</div>} />
             <Route path="messages" element={<div>Messages</div>} />
-            <Route path="settings" element={<div>Settings</div>} />
+            <Route path="settings" element={<AccountSettings />} />
           </Route>
 
           {/* Catch-all redirect to landing page */}

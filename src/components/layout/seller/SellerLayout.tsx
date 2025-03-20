@@ -10,6 +10,7 @@ import {
   LogOut,
   Menu,
   X,
+  Calendar,
   // ChevronDown,
   Bell,
 } from "lucide-react";
@@ -47,6 +48,11 @@ const SellerLayout: React.FC = () => {
       icon: <User size={20} />,
       label: "Profile",
       href: "/seller/profile",
+    },
+    {
+      icon: <Calendar size={20} />,
+      label: "Bookings",
+      href: "/seller/bookings",
     },
     {
       icon: <Briefcase size={20} />,
