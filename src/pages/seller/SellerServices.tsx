@@ -48,6 +48,7 @@ const mockServices: Service[] = [
     isAvailable: true,
     createdAt: "2023-01-15T10:00:00Z",
     updatedAt: "2023-01-15T10:00:00Z",
+    category: "",
   },
   {
     id: "s2",

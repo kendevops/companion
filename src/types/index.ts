@@ -53,8 +53,10 @@ export interface Service {
     sellerId: string;
     title: string;
     description: string;
+    category?: string;
     price: number;
     isAvailable: boolean;
+    images?: string[];
     createdAt: string;
     updatedAt: string;
 }
