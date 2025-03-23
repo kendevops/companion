@@ -24,6 +24,7 @@ import BuyerServices from "./pages/buyer/Service";
 import SellerBookings from "./pages/seller/Bookings";
 import AccountSettings from "@/pages/Settings";
 import SellerServices from "./pages/seller/SellerServices";
+import SellerProfile from "./pages/seller/SellerProfile";
 
 // Create a client for React Query
 const queryClient = new QueryClient();
@@ -55,7 +56,7 @@ const App: React.FC = () => {
               element={<Navigate to="/seller/dashboard" replace />}
             />
             <Route path="dashboard" element={<SellerDashboard />} />
-            <Route path="profile" element={<div>Seller Profile</div>} />
+            <Route path="profile" element={<SellerProfile />} />
             <Route path="bookings" element={<SellerBookings />} />
             <Route path="services" element={<SellerServices />} />
             <Route path="earnings" element={<div>Earnings</div>} />
