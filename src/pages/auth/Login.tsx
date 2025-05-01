@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Eye, EyeOff } from "lucide-react";
 import api from "@/services/api";
 import { Button } from "@/components/ui/button";
+import { toast } from "react-hot-toast";
 import { Input } from "@/components/ui/input";
 import {
   Form,
@@ -19,8 +20,6 @@ import {
 import { useAuthStore } from "@/store/auth-store";
 import { UserRole } from "@/types";
 
-// Import companion image or use the one from your assets
-// This is a placeholder path - you'll need to add the actual image
 import companionImage from "@/assets/images/companion-landscape.png";
 
 // Define the login schema with Zod
@@ -33,12 +32,14 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 
 const LoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [loginError, setLoginError] = useState("");
   const navigate = useNavigate();
-  //   const location = useLocation();
+  const location = useLocation();
   const { login } = useAuthStore();
 
   // Get the user's intended destination from the location state
-  //   const from = (location.state as any)?.from?.pathname || "/";
+  const from = (location.state as any)?.from?.pathname || "/";
 
   // Initialize the form
   const form = useForm<LoginFormValues>({
@@ -49,46 +50,11 @@ const LoginPage: React.FC = () => {
     },
   });
 
-  // Handle form submission
-  // const onSubmit = (data: LoginFormValues) => {
-  //   console.log("Login data:", data);
-
-  //   // In a real application, you would verify credentials with your API
-  //   // For demo purposes, we'll simulate a successful login
-
-  //   // Determine user role based on email (this is just for demonstration)
-  //   let userRole = UserRole.BUYER;
-  //   if (data.email.includes("admin")) {
-  //     userRole = UserRole.ADMIN;
-  //   } else if (data.email.includes("seller")) {
-  //     userRole = UserRole.SELLER;
-  //   }
-
-  //   // Create a mock user object
-  //   const user = {
-  //     id: "123",
-  //     name: "Demo User",
-  //     email: data.email,
-  //     username: data.email.split("@")[0],
-  //     role: userRole,
-  //     createdAt: new Date().toISOString(),
-  //     updatedAt: new Date().toISOString(),
-  //   };
-
-  //   // Login the user
-  //   login(user);
-
-  //   // Redirect based on the user's role
-  //   if (userRole === UserRole.ADMIN) {
-  //     navigate("/admin/dashboard");
-  //   } else if (userRole === UserRole.SELLER) {
-  //     navigate("/seller/dashboard");
-  //   } else {
-  //     navigate("/buyer/dashboard");
-  //   }
-  // };
-
   const onSubmit = async (data: LoginFormValues) => {
+    // Clear any previous errors
+    setLoginError("");
+    setIsLoading(true);
+
     try {
       // Call login API
       const response = await api.post("/auth/login", {
@@ -99,10 +65,11 @@ const LoginPage: React.FC = () => {
       // Destructure returned token and user
       const { token, user } = response.data;
 
+      toast.success("Login successful! Redirecting…");
+
       // Store user and token
       login({ ...user, token });
-      console.log("User logged in:", user);
-      console.log("Token:", token);
+      console.log("User is from", from)
 
       // Redirect based on role
       switch (user.role) {
@@ -117,11 +84,20 @@ const LoginPage: React.FC = () => {
       }
     } catch (error: any) {
       // Handle errors (e.g., show form error)
-      form.setError("email", {
+      const message =
+        error.response?.data?.message || "Login failed. Please try again.";
+
+      // Set the login error state
+      setLoginError(message);
+      toast.error(`Login failed: ${message}`);
+
+      // Don't reset the form - let the user correct their input
+      form.setError("root", {
         type: "manual",
-        message:
-          error.response?.data?.message || "Login failed. Please try again.",
+        message,
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -155,6 +131,13 @@ const LoginPage: React.FC = () => {
 
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              {/* Display login error if any */}
+              {loginError && (
+                <div className="p-3 rounded-md bg-red-50 text-red-600 text-sm">
+                  {loginError}
+                </div>
+              )}
+
               <FormField
                 control={form.control}
                 name="email"
@@ -212,26 +195,12 @@ const LoginPage: React.FC = () => {
                 )}
               />
 
-              {/* Demo Account Hints */}
-              {/* <div className="bg-gray-50 p-3 rounded-lg text-sm text-muted-foreground">
-                <p className="font-medium mb-1">Demo Accounts:</p>
-                <p>
-                  <strong>Admin:</strong> admin@example.com
-                </p>
-                <p>
-                  <strong>Seller:</strong> seller@example.com
-                </p>
-                <p>
-                  <strong>Buyer:</strong> buyer@example.com
-                </p>
-                <p className="mt-1">Use any password to login</p>
-              </div> */}
-
               <Button
                 type="submit"
                 className="w-full bg-[#3170F3] hover:bg-[#3170F3]/90 cursor-pointer"
+                disabled={isLoading}
               >
-                Sign in
+                {isLoading ? "Signing in..." : "Sign in"}
               </Button>
             </form>
           </Form>
