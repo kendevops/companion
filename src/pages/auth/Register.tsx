@@ -2,6 +2,8 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import RegisterForm from "@/components/forms/RegisterForm";
 import { UserRole } from "@/types";
+import api from "@/services/api";
+
 
 // Import this image or use the one from your assets
 // This is a placeholder path - you'll need to add the actual image
@@ -21,7 +23,14 @@ const RegisterPage: React.FC = () => {
   const handleRegister = async (data: RegisterFormValues) => {
     // In production, you would call your API here
     console.log("Registration data:", data);
-
+    try {
+      const response = await api.post("/auth/register", data);
+      console.log("Registration successful:", response.data);
+      // Optionally, you can store the user data in your state management or context
+    } catch (error) {
+      console.error("Registration error:", error);
+      // Handle error (e.g., show a notification)
+    }
     // Navigate based on the role selected
     if (data.role === UserRole.SELLER) {
       navigate("/seller/dashboard");

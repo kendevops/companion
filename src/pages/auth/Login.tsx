@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Eye, EyeOff } from "lucide-react";
-
+import api from "@/services/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -49,41 +50,78 @@ const LoginPage: React.FC = () => {
   });
 
   // Handle form submission
-  const onSubmit = (data: LoginFormValues) => {
-    console.log("Login data:", data);
+  // const onSubmit = (data: LoginFormValues) => {
+  //   console.log("Login data:", data);
 
-    // In a real application, you would verify credentials with your API
-    // For demo purposes, we'll simulate a successful login
+  //   // In a real application, you would verify credentials with your API
+  //   // For demo purposes, we'll simulate a successful login
 
-    // Determine user role based on email (this is just for demonstration)
-    let userRole = UserRole.BUYER;
-    if (data.email.includes("admin")) {
-      userRole = UserRole.ADMIN;
-    } else if (data.email.includes("seller")) {
-      userRole = UserRole.SELLER;
-    }
+  //   // Determine user role based on email (this is just for demonstration)
+  //   let userRole = UserRole.BUYER;
+  //   if (data.email.includes("admin")) {
+  //     userRole = UserRole.ADMIN;
+  //   } else if (data.email.includes("seller")) {
+  //     userRole = UserRole.SELLER;
+  //   }
 
-    // Create a mock user object
-    const user = {
-      id: "123",
-      name: "Demo User",
-      email: data.email,
-      username: data.email.split("@")[0],
-      role: userRole,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
+  //   // Create a mock user object
+  //   const user = {
+  //     id: "123",
+  //     name: "Demo User",
+  //     email: data.email,
+  //     username: data.email.split("@")[0],
+  //     role: userRole,
+  //     createdAt: new Date().toISOString(),
+  //     updatedAt: new Date().toISOString(),
+  //   };
 
-    // Login the user
-    login(user);
+  //   // Login the user
+  //   login(user);
 
-    // Redirect based on the user's role
-    if (userRole === UserRole.ADMIN) {
-      navigate("/admin/dashboard");
-    } else if (userRole === UserRole.SELLER) {
-      navigate("/seller/dashboard");
-    } else {
-      navigate("/buyer/dashboard");
+  //   // Redirect based on the user's role
+  //   if (userRole === UserRole.ADMIN) {
+  //     navigate("/admin/dashboard");
+  //   } else if (userRole === UserRole.SELLER) {
+  //     navigate("/seller/dashboard");
+  //   } else {
+  //     navigate("/buyer/dashboard");
+  //   }
+  // };
+
+  const onSubmit = async (data: LoginFormValues) => {
+    try {
+      // Call login API
+      const response = await api.post("/auth/login", {
+        email: data.email,
+        password: data.password,
+      });
+
+      // Destructure returned token and user
+      const { token, user } = response.data;
+
+      // Store user and token
+      login({ ...user, token });
+      console.log("User logged in:", user);
+      console.log("Token:", token);
+
+      // Redirect based on role
+      switch (user.role) {
+        case UserRole.ADMIN:
+          navigate("/admin/dashboard");
+          break;
+        case UserRole.SELLER:
+          navigate("/seller/dashboard");
+          break;
+        default:
+          navigate("/buyer/dashboard");
+      }
+    } catch (error: any) {
+      // Handle errors (e.g., show form error)
+      form.setError("email", {
+        type: "manual",
+        message:
+          error.response?.data?.message || "Login failed. Please try again.",
+      });
     }
   };
 
@@ -175,7 +213,7 @@ const LoginPage: React.FC = () => {
               />
 
               {/* Demo Account Hints */}
-              <div className="bg-gray-50 p-3 rounded-lg text-sm text-muted-foreground">
+              {/* <div className="bg-gray-50 p-3 rounded-lg text-sm text-muted-foreground">
                 <p className="font-medium mb-1">Demo Accounts:</p>
                 <p>
                   <strong>Admin:</strong> admin@example.com
@@ -187,7 +225,7 @@ const LoginPage: React.FC = () => {
                   <strong>Buyer:</strong> buyer@example.com
                 </p>
                 <p className="mt-1">Use any password to login</p>
-              </div>
+              </div> */}
 
               <Button
                 type="submit"
