@@ -1,16 +1,16 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { toast } from "react-hot-toast";
 import RegisterForm from "@/components/forms/RegisterForm";
 import { UserRole } from "@/types";
 import api from "@/services/api";
 
-
 // Import this image or use the one from your assets
-// This is a placeholder path - you'll need to add the actual image
 import companionImage from "@/assets/images/companion-landscape.png";
 
 interface RegisterFormValues {
-  fullName: string;
+  name: string;
   email: string;
   username: string;
   password: string;
@@ -19,23 +19,47 @@ interface RegisterFormValues {
 
 const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [isLoading, setIsLoading] = useState(false);
+  const [defaultRole, setDefaultRole] = useState<UserRole>(UserRole.BUYER);
+
+  // Check for role parameter in URL
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const roleParam = params.get("role");
+
+    if (roleParam === "seller" && roleParam.toLowerCase() === "seller") {
+      setDefaultRole(UserRole.SELLER);
+    } else {
+      setDefaultRole(UserRole.BUYER);
+    }
+  }, [location.search]);
 
   const handleRegister = async (data: RegisterFormValues) => {
-    // In production, you would call your API here
-    console.log("Registration data:", data);
+    setIsLoading(true);
+
     try {
       const response = await api.post("/auth/register", data);
       console.log("Registration successful:", response.data);
-      // Optionally, you can store the user data in your state management or context
-    } catch (error) {
+
+      // Show success message
+      toast.success("Registration successful! Redirecting...");
+
+      // Navigate based on the role selected
+      if (data.role === UserRole.SELLER) {
+        navigate("/seller/dashboard");
+      } else {
+        navigate("/buyer/dashboard");
+      }
+    } catch (error: any) {
+      // Handle error and show appropriate error message
+      const errorMessage =
+        error.response?.data?.message ||
+        "Registration failed. Please try again.";
       console.error("Registration error:", error);
-      // Handle error (e.g., show a notification)
-    }
-    // Navigate based on the role selected
-    if (data.role === UserRole.SELLER) {
-      navigate("/seller/dashboard");
-    } else if (data.role === UserRole.BUYER) {
-      navigate("/buyer/dashboard");
+      toast.error(`Registration failed: ${errorMessage}`);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -59,7 +83,11 @@ const RegisterPage: React.FC = () => {
 
       {/* Right Side - Form */}
       <div className="w-full md:w-1/2 lg:w-6/12 flex items-center justify-center p-8">
-        <RegisterForm defaultRole={UserRole.BUYER} onSubmit={handleRegister} />
+        <RegisterForm
+          defaultRole={defaultRole}
+          onSubmit={handleRegister}
+          isLoading={isLoading}
+        />
       </div>
     </div>
   );
