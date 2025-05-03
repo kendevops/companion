@@ -4,10 +4,10 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Eye, EyeOff } from "lucide-react";
-import api from "@/services/api";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
+// import api from "@/services/api";
 import { Button } from "@/components/ui/button";
-import { toast } from "react-hot-toast";
+// import { toast } from "react-hot-toast";
 import { Input } from "@/components/ui/input";
 import {
   Form,
@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/form";
 import { useAuthStore } from "@/store/auth-store";
 import { UserRole } from "@/types";
+// import { Alert, AlertDescription } from "@/components/ui/alert";
 
 import companionImage from "@/assets/images/companion-landscape.png";
 
@@ -30,13 +31,17 @@ const loginSchema = z.object({
 
 type LoginFormValues = z.infer<typeof loginSchema>;
 
-const LoginPage: React.FC = () => {
+interface LoginFormProps {
+  onSuccess?: () => void;
+}
+
+const LoginPage: React.FC<LoginFormProps> = ({ onSuccess }) => {
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [loginError, setLoginError] = useState("");
+  // const [isLoading, setIsLoading] = useState(false);
+  // const [loginError, setLoginError] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
-  const { login } = useAuthStore();
+  const { loginUser, isLoading, error } = useAuthStore();
 
   // Get the user's intended destination from the location state
   const from = (location.state as any)?.from?.pathname || "/";
@@ -50,54 +55,78 @@ const LoginPage: React.FC = () => {
     },
   });
 
+  // const onSubmit = async (data: LoginFormValues) => {
+  //   // Clear any previous errors
+  //   setLoginError("");
+  //   setIsLoading(true);
+
+  //   try {
+  //     // Call login API
+  //     const response = await api.post("/auth/login", {
+  //       email: data.email,
+  //       password: data.password,
+  //     });
+
+  //     // Destructure returned token and user
+  //     const { token, user } = response.data;
+
+  //     toast.success("Login successful! Redirecting…");
+
+  //     // Store user and token
+  //     login({ ...user, token });
+  //     console.log("User is from", from)
+
+  //     // Redirect based on role
+  //     switch (user.role) {
+  //       case UserRole.ADMIN:
+  //         navigate("/admin/dashboard");
+  //         break;
+  //       case UserRole.SELLER:
+  //         navigate("/seller/dashboard");
+  //         break;
+  //       default:
+  //         navigate("/buyer/dashboard");
+  //     }
+  //   } catch (error: any) {
+  //     // Handle errors (e.g., show form error)
+  //     const message =
+  //       error.response?.data?.message || "Login failed. Please try again.";
+
+  //     // Set the login error state
+  //     setLoginError(message);
+  //     toast.error(`Login failed: ${message}`);
+
+  //     // Don't reset the form - let the user correct their input
+  //     form.setError("root", {
+  //       type: "manual",
+  //       message,
+  //     });
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
   const onSubmit = async (data: LoginFormValues) => {
-    // Clear any previous errors
-    setLoginError("");
-    setIsLoading(true);
+    const success = await loginUser(data);
 
-    try {
-      // Call login API
-      const response = await api.post("/auth/login", {
-        email: data.email,
-        password: data.password,
-      });
+    if (success) {
+      // Get the user from the store
+      const { user } = useAuthStore.getState();
+      console.log("User is from", from);
 
-      // Destructure returned token and user
-      const { token, user } = response.data;
-
-      toast.success("Login successful! Redirecting…");
-
-      // Store user and token
-      login({ ...user, token });
-      console.log("User is from", from)
-
-      // Redirect based on role
-      switch (user.role) {
-        case UserRole.ADMIN:
-          navigate("/admin/dashboard");
-          break;
-        case UserRole.SELLER:
-          navigate("/seller/dashboard");
-          break;
-        default:
-          navigate("/buyer/dashboard");
+      // Navigate based on the user's role
+      if (user?.role === UserRole.ADMIN) {
+        navigate("/admin/dashboard");
+      } else if (user?.role === UserRole.SELLER) {
+        navigate("/seller/dashboard");
+      } else {
+        navigate("/buyer/dashboard");
       }
-    } catch (error: any) {
-      // Handle errors (e.g., show form error)
-      const message =
-        error.response?.data?.message || "Login failed. Please try again.";
 
-      // Set the login error state
-      setLoginError(message);
-      toast.error(`Login failed: ${message}`);
-
-      // Don't reset the form - let the user correct their input
-      form.setError("root", {
-        type: "manual",
-        message,
-      });
-    } finally {
-      setIsLoading(false);
+      // Call onSuccess callback if provided
+      if (onSuccess) {
+        onSuccess();
+      }
     }
   };
 
@@ -132,9 +161,9 @@ const LoginPage: React.FC = () => {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               {/* Display login error if any */}
-              {loginError && (
+              {error && (
                 <div className="p-3 rounded-md bg-red-50 text-red-600 text-sm">
-                  {loginError}
+                  {error}
                 </div>
               )}
 
@@ -197,10 +226,17 @@ const LoginPage: React.FC = () => {
 
               <Button
                 type="submit"
-                className="w-full bg-[#3170F3] hover:bg-[#3170F3]/90 cursor-pointer"
+                className="w-full bg-brand-blue hover:bg-brand-blue/90"
                 disabled={isLoading}
               >
-                {isLoading ? "Signing in..." : "Sign in"}
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Signing in...
+                  </>
+                ) : (
+                  "Sign in"
+                )}
               </Button>
             </form>
           </Form>
