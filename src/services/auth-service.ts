@@ -14,6 +14,15 @@ interface LoginData {
     password: string;
 }
 
+interface ForgotPasswordData {
+    email: string;
+}
+
+interface ResetPasswordData {
+    token: string;
+    password: string;
+}
+
 interface AuthResponse {
     access_token: string;
     user: {
@@ -59,6 +68,16 @@ const AuthService = {
     // Check if the user is authenticated
     isAuthenticated() {
         return !!localStorage.getItem('token');
+    },
+
+    // Request a password reset
+    async forgotPassword(data: ForgotPasswordData) {
+        return api.post('/auth/forgot-password', data);
+    },
+
+    // Reset password with token
+    async resetPassword(data: ResetPasswordData) {
+        return api.post('/auth/reset-password', data);
     }
 };
 

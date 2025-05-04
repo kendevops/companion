@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -38,10 +37,18 @@ const LoginPage: React.FC<LoginFormProps> = ({ onSuccess }) => {
   // const [loginError, setLoginError] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const { loginUser, isLoading, error } = useAuthStore();
 
   // Get the user's intended destination from the location state
-  const from = (location.state as any)?.from?.pathname || "/";
+  useEffect(() => {
+    if (location.state?.message) {
+      setSuccessMessage(location.state.message);
+
+      // Clear the location state
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   // Initialize the form
   const form = useForm<LoginFormValues>({
@@ -52,64 +59,12 @@ const LoginPage: React.FC<LoginFormProps> = ({ onSuccess }) => {
     },
   });
 
-  // const onSubmit = async (data: LoginFormValues) => {
-  //   // Clear any previous errors
-  //   setLoginError("");
-  //   setIsLoading(true);
-
-  //   try {
-  //     // Call login API
-  //     const response = await api.post("/auth/login", {
-  //       email: data.email,
-  //       password: data.password,
-  //     });
-
-  //     // Destructure returned token and user
-  //     const { token, user } = response.data;
-
-  //     toast.success("Login successful! Redirecting…");
-
-  //     // Store user and token
-  //     login({ ...user, token });
-  //     console.log("User is from", from)
-
-  //     // Redirect based on role
-  //     switch (user.role) {
-  //       case UserRole.ADMIN:
-  //         navigate("/admin/dashboard");
-  //         break;
-  //       case UserRole.SELLER:
-  //         navigate("/seller/dashboard");
-  //         break;
-  //       default:
-  //         navigate("/buyer/dashboard");
-  //     }
-  //   } catch (error: any) {
-  //     // Handle errors (e.g., show form error)
-  //     const message =
-  //       error.response?.data?.message || "Login failed. Please try again.";
-
-  //     // Set the login error state
-  //     setLoginError(message);
-  //     toast.error(`Login failed: ${message}`);
-
-  //     // Don't reset the form - let the user correct their input
-  //     form.setError("root", {
-  //       type: "manual",
-  //       message,
-  //     });
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
   const onSubmit = async (data: LoginFormValues) => {
     const success = await loginUser(data);
 
     if (success) {
       // Get the user from the store
       const { user } = useAuthStore.getState();
-      console.log("User is from", from);
 
       // Navigate based on the user's role
       if (user?.role === UserRole.ADMIN) {
@@ -161,6 +116,12 @@ const LoginPage: React.FC<LoginFormProps> = ({ onSuccess }) => {
               {error && (
                 <div className="p-3 rounded-md bg-red-50 text-red-600 text-sm">
                   {error}
+                </div>
+              )}
+
+              {successMessage && (
+                <div className="p-3 rounded-md text-sm bg-green-50 text-green-800 border-green-200">
+                  {successMessage}
                 </div>
               )}
 

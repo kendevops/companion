@@ -7,6 +7,8 @@ import { Toaster } from "sonner";
 // Auth pages
 import LoginPage from "@/pages/auth/Login";
 import RegisterPage from "@/pages/auth/Register";
+import ForgotPasswordPage from "@/pages/auth/ForgotPassword";
+import ResetPasswordPage from "@/pages/auth/ResetPassword";
 // import ForgotPasswordPage from "@/pages/auth/forgot-password";
 
 // Main layouts for different roles
@@ -38,7 +40,8 @@ const App: React.FC = () => {
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          {/* <Route path="/forgot-password" element={<ForgotPasswordPage />} /> */}
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
           {/* Admin Routes - Protected */}
           <Route path="/admin" element={<AdminLayout />}>
