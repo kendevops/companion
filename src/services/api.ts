@@ -1,6 +1,6 @@
 import axios from 'axios';
 import API_URL from './api-config';
-import { toast } from 'sonner';
+import { toast } from "react-hot-toast";
 
 // Create an axios instance with the base URL
 const api = axios.create({

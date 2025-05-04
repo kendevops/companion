@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Heart, Star } from "lucide-react";
@@ -6,29 +8,45 @@ import { Swiper, SwiperSlide } from "swiper/react";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Seller, Service } from "@/types";
+// import { Seller, Service } from "@/types";
+import API_URL from "@/services/api-config";
 
 interface SellerCardProps {
-  seller: Seller;
-  featuredServices?: Service[];
+  seller: any; // Backend response structure is slightly different from our frontend type
+  onToggleFavorite?: (sellerId: string) => void;
+  isFavorite?: boolean;
 }
 
 const SellerCard: React.FC<SellerCardProps> = ({
   seller,
-  featuredServices = [],
+  onToggleFavorite,
+  isFavorite = false,
 }) => {
   const navigate = useNavigate();
 
   // Navigate to seller detail page
   const handleClick = () => {
-    navigate(`/buyer/sellers/${seller.id}`);
+    navigate(`/buyer/sellers/${seller.seller.id}`);
   };
 
   // Toggle favorite (would connect to a favorites store in a real app)
   const handleToggleFavorite = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent card click
-    console.log("Toggle favorite for seller:", seller.id);
+    if (onToggleFavorite) {
+      onToggleFavorite(seller.seller.id);
+    }
   };
+
+  // Format image URLs
+  const getImageUrl = (url: string) => {
+    if (url.startsWith("http")) {
+      return url;
+    }
+    return `${API_URL}${url}`;
+  };
+
+  // Extract services from the seller response
+  const featuredServices = seller.seller.services || [];
 
   return (
     <div
@@ -37,21 +55,24 @@ const SellerCard: React.FC<SellerCardProps> = ({
     >
       {/* Images Carousel */}
       <div className="relative h-48 bg-gray-200">
-        {seller.profilePictures && seller.profilePictures.length > 0 ? (
+        {seller.seller.profilePictures &&
+        seller.seller.profilePictures.length > 0 ? (
           <Swiper
             slidesPerView={1}
             pagination={{ clickable: true }}
             className="h-full w-full"
           >
-            {seller.profilePictures.map((image, index) => (
-              <SwiperSlide key={index}>
-                <img
-                  src={image}
-                  alt={`${seller.name} profile ${index + 1}`}
-                  className="h-full w-full object-cover"
-                />
-              </SwiperSlide>
-            ))}
+            {seller.seller.profilePictures.map(
+              (image: string, index: number) => (
+                <SwiperSlide key={index}>
+                  <img
+                    src={getImageUrl(image)}
+                    alt={`${seller.name} profile ${index + 1}`}
+                    className="h-full w-full object-cover"
+                  />
+                </SwiperSlide>
+              )
+            )}
           </Swiper>
         ) : (
           <div className="h-full w-full flex items-center justify-center bg-gray-200">
@@ -68,8 +89,10 @@ const SellerCard: React.FC<SellerCardProps> = ({
         >
           <Heart
             size={18}
-            className="text-gray-600 hover:text-red-500"
-            fill="transparent"
+            className={`${
+              isFavorite ? "text-red-500" : "text-gray-600 hover:text-red-500"
+            }`}
+            fill={isFavorite ? "currentColor" : "transparent"}
           />
         </Button>
       </div>
@@ -87,13 +110,13 @@ const SellerCard: React.FC<SellerCardProps> = ({
                 fill="currentColor"
               />
               <span className="text-sm font-medium">
-                {seller.rating.toFixed(1)}
+                {seller.seller.rating.toFixed(1)}
               </span>
             </div>
           </div>
 
           {/* Verified Badge */}
-          {seller.verified && (
+          {seller.seller.verified && (
             <Badge
               variant="outline"
               className="bg-green-50 text-green-700 border-green-200"
@@ -108,7 +131,7 @@ const SellerCard: React.FC<SellerCardProps> = ({
           <div className="mt-3">
             <p className="text-sm font-medium text-gray-700 mb-2">Services:</p>
             <div className="space-y-2">
-              {featuredServices.slice(0, 2).map((service) => (
+              {featuredServices.slice(0, 2).map((service: any) => (
                 <div key={service.id} className="flex justify-between text-sm">
                   <span className="text-gray-600">{service.title}</span>
                   <span className="font-medium">

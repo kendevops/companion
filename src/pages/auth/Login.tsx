@@ -5,9 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
-// import api from "@/services/api";
 import { Button } from "@/components/ui/button";
-// import { toast } from "react-hot-toast";
 import { Input } from "@/components/ui/input";
 import {
   Form,
@@ -19,7 +17,6 @@ import {
 } from "@/components/ui/form";
 import { useAuthStore } from "@/store/auth-store";
 import { UserRole } from "@/types";
-// import { Alert, AlertDescription } from "@/components/ui/alert";
 
 import companionImage from "@/assets/images/companion-landscape.png";
 
