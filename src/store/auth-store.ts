@@ -60,6 +60,7 @@ export const useAuthStore = create<AuthStore>()(
                         isLoading: false,
                         error: error.response?.data?.message || 'Registration failed'
                     });
+                    setTimeout(() => set({ error: null }), 1000);
                     return false;
                 }
             },
@@ -77,6 +78,7 @@ export const useAuthStore = create<AuthStore>()(
                         isLoading: false,
                         error: error.response?.data?.message || 'Login failed'
                     });
+                    setTimeout(() => set({ error: null }), 1000);
                     return false;
                 }
             },

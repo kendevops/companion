@@ -5,6 +5,7 @@ import { useAuthStore, isAuthenticated, hasRole } from "@/store/auth-store";
 import { Loader2 } from "lucide-react";
 
 interface ProtectedRoutesProps {
+  children: React.ReactNode;
   allowedRoles: UserRole[];
 }
 
