@@ -104,6 +104,7 @@ const SellerDetails: React.FC = () => {
         purchaseId: purchaseResponse.data.id,
         paymentMethod: "credit_card",
       });
+      console.log("Payment response:", paymentResponse);
 
       toast.success("Payment successful!");
 
