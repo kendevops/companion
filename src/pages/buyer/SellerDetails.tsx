@@ -99,6 +99,7 @@ const SellerDetails: React.FC = () => {
         serviceIds: selectedServices,
       });
 
+      console.log("Purchase response:", purchaseResponse);
       // Process payment
       const paymentResponse = await PaymentsService.createPayment({
         purchaseId: purchaseResponse.data.id,
