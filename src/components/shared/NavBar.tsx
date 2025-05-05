@@ -2,16 +2,36 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuthStore, isAuthenticated } from "@/store/auth-store";
+import { UserRole } from "@/types";
 
 const Navbar: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+
+  // grab the user from your Zustand store
+  const user = useAuthStore((s) => s.user);
+  const loggedIn = isAuthenticated();
+
+  // decide where "Dashboard" should go
+  const dashboardPath = React.useMemo(() => {
+    if (!user) return "/dashboard";
+    switch (user.role) {
+      case UserRole.ADMIN:
+        return "/admin/dashboard";
+      case UserRole.SELLER:
+        return "/seller/dashboard";
+      default:
+        return "/buyer/dashboard";
+    }
+  }, [user]);
+
+  // close menu on ESC
   React.useEffect(() => {
     const handleEsc = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setMobileMenuOpen(false);
       }
     };
-
     window.addEventListener("keydown", handleEsc);
     return () => window.removeEventListener("keydown", handleEsc);
   }, []);
@@ -25,28 +45,16 @@ const Navbar: React.FC = () => {
 
           {/* Desktop Menu */}
           <nav className="hidden md:flex ml-10 space-x-6">
-            <a
-              href="#services"
-              className="text-sm font-medium text-gray-600 hover:text-gray-900"
-            >
+            <a href="#services" className="text-sm font-medium text-gray-600 hover:text-gray-900">
               Services
             </a>
-            <a
-              href="#how-it-works"
-              className="text-sm font-medium text-gray-600 hover:text-gray-900"
-            >
+            <a href="#how-it-works" className="text-sm font-medium text-gray-600 hover:text-gray-900">
               How It Works
             </a>
-            <a
-              href="#testimonials"
-              className="text-sm font-medium text-gray-600 hover:text-gray-900"
-            >
+            <a href="#testimonials" className="text-sm font-medium text-gray-600 hover:text-gray-900">
               Testimonials
             </a>
-            <a
-              href="#pricing"
-              className="text-sm font-medium text-gray-600 hover:text-gray-900"
-            >
+            <a href="#pricing" className="text-sm font-medium text-gray-600 hover:text-gray-900">
               Pricing
             </a>
           </nav>
@@ -54,7 +62,7 @@ const Navbar: React.FC = () => {
 
         {/* Hamburger Icon */}
         <div className="md:hidden">
-          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+          <button onClick={() => setMobileMenuOpen((o) => !o)}>
             {mobileMenuOpen ? (
               <X className="h-6 w-6 text-gray-600" />
             ) : (
@@ -65,12 +73,20 @@ const Navbar: React.FC = () => {
 
         {/* Auth Buttons (desktop) */}
         <div className="hidden md:flex items-center space-x-3">
-          <Link to="/login">
-            <Button variant="outline">Sign In</Button>
-          </Link>
-          <Link to="/register">
-            <Button>Get Started</Button>
-          </Link>
+          {loggedIn ? (
+            <Link to={dashboardPath}>
+              <Button>Dashboard</Button>
+            </Link>
+          ) : (
+            <>
+              <Link to="/login">
+                <Button variant="outline">Sign In</Button>
+              </Link>
+              <Link to="/register">
+                <Button>Get Started</Button>
+              </Link>
+            </>
+          )}
         </div>
       </div>
 
@@ -84,50 +100,36 @@ const Navbar: React.FC = () => {
           />
           {/* Menu */}
           <div className="absolute top-0 left-0 bg-white right-0 z-50 p-6 w-11/12 max-w-sm mx-auto mt-24 rounded-lg shadow-xl space-y-4">
-            <a
-              href="#services"
-              className="block text-sm font-medium text-gray-700 hover:text-gray-900"
-            >
+            <a href="#services" className="block text-sm font-medium text-gray-700 hover:text-gray-900">
               Services
             </a>
-            <a
-              href="#how-it-works"
-              className="block text-sm font-medium text-gray-700 hover:text-gray-900"
-            >
+            <a href="#how-it-works" className="block text-sm font-medium text-gray-700 hover:text-gray-900">
               How It Works
             </a>
-            <a
-              href="#testimonials"
-              className="block text-sm font-medium text-gray-700 hover:text-gray-900"
-            >
+            <a href="#testimonials" className="block text-sm font-medium text-gray-700 hover:text-gray-900">
               Testimonials
             </a>
-            <a
-              href="#pricing"
-              className="block text-sm font-medium text-gray-700 hover:text-gray-900"
-            >
+            <a href="#pricing" className="block text-sm font-medium text-gray-700 hover:text-gray-900">
               Pricing
             </a>
 
             <div className="flex flex-col gap-2 pt-4 border-t">
-              <Link to="/login">
-                <Button variant="outline" className="w-full">
-                  Sign In
-                </Button>
-              </Link>
-              <Link to="/register">
-                <Button className="w-full">Get Started</Button>
-              </Link>
-              {/* <div className="flex flex-col gap-2 pt-4 border-t">
-                <Link to="/login">
-                  <Button variant="outline" className="w-full">
-                    Sign In
-                  </Button>
+              {loggedIn ? (
+                <Link to={dashboardPath}>
+                  <Button className="w-full">Dashboard</Button>
                 </Link>
-                <Link to="/register">
-                  <Button className="w-full">Get Started</Button>
-                </Link>
-              </div> */}
+              ) : (
+                <>
+                  <Link to="/login">
+                    <Button variant="outline" className="w-full">
+                      Sign In
+                    </Button>
+                  </Link>
+                  <Link to="/register">
+                    <Button className="w-full">Get Started</Button>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>
