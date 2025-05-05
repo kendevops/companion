@@ -100,7 +100,7 @@ const SellerLayout: React.FC = () => {
               </AvatarFallback>
             </Avatar>
             <div className="ml-3">
-              <p className="font-medium text-sm">Demo User</p>
+              <p className="font-medium text-sm">{user?.username}</p>
               <p className="text-xs text-muted-foreground">Seller</p>
             </div>
           </div>
