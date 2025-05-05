@@ -1,8 +1,8 @@
 // User roles
 export enum UserRole {
-    ADMIN = "admin",
-    SELLER = "seller",
-    BUYER = "buyer"
+    ADMIN = "ADMIN",
+    SELLER = "SELLER",
+    BUYER = "BUYER"
 }
 
 // User interface

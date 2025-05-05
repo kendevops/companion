@@ -5,7 +5,7 @@ import {
   User,
   Briefcase,
   DollarSign,
-  MessageSquare,
+  // MessageSquare,
   Settings,
   LogOut,
   Menu,
@@ -64,11 +64,11 @@ const SellerLayout: React.FC = () => {
       label: "Earnings",
       href: "/seller/earnings",
     },
-    {
-      icon: <MessageSquare size={20} />,
-      label: "Messages",
-      href: "/seller/messages",
-    },
+    // {
+    //   icon: <MessageSquare size={20} />,
+    //   label: "Messages",
+    //   href: "/seller/messages",
+    // },
     {
       icon: <Settings size={20} />,
       label: "Settings",

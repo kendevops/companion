@@ -226,11 +226,11 @@ const BuyerLayout: React.FC = () => {
       label: "Favorites",
       href: "/buyer/favorites",
     },
-    {
-      icon: <MessageSquare size={20} />,
-      label: "Messages",
-      href: "/buyer/messages",
-    },
+    // {
+    //   icon: <MessageSquare size={20} />,
+    //   label: "Messages",
+    //   href: "/buyer/messages",
+    // },
     {
       icon: <Settings size={20} />,
       label: "Settings",

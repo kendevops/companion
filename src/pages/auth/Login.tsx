@@ -1,10 +1,9 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Eye, EyeOff } from "lucide-react";
-
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -18,8 +17,6 @@ import {
 import { useAuthStore } from "@/store/auth-store";
 import { UserRole } from "@/types";
 
-// Import companion image or use the one from your assets
-// This is a placeholder path - you'll need to add the actual image
 import companionImage from "@/assets/images/companion-landscape.png";
 
 // Define the login schema with Zod
@@ -30,14 +27,28 @@ const loginSchema = z.object({
 
 type LoginFormValues = z.infer<typeof loginSchema>;
 
-const LoginPage: React.FC = () => {
+interface LoginFormProps {
+  onSuccess?: () => void;
+}
+
+const LoginPage: React.FC<LoginFormProps> = ({ onSuccess }) => {
   const [showPassword, setShowPassword] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
+  // const [loginError, setLoginError] = useState("");
   const navigate = useNavigate();
-  //   const location = useLocation();
-  const { login } = useAuthStore();
+  const location = useLocation();
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const { loginUser, isLoading, error } = useAuthStore();
 
   // Get the user's intended destination from the location state
-  //   const from = (location.state as any)?.from?.pathname || "/";
+  useEffect(() => {
+    if (location.state?.message) {
+      setSuccessMessage(location.state.message);
+
+      // Clear the location state
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   // Initialize the form
   const form = useForm<LoginFormValues>({
@@ -48,42 +59,26 @@ const LoginPage: React.FC = () => {
     },
   });
 
-  // Handle form submission
-  const onSubmit = (data: LoginFormValues) => {
-    console.log("Login data:", data);
+  const onSubmit = async (data: LoginFormValues) => {
+    const success = await loginUser(data);
 
-    // In a real application, you would verify credentials with your API
-    // For demo purposes, we'll simulate a successful login
+    if (success) {
+      // Get the user from the store
+      const { user } = useAuthStore.getState();
 
-    // Determine user role based on email (this is just for demonstration)
-    let userRole = UserRole.BUYER;
-    if (data.email.includes("admin")) {
-      userRole = UserRole.ADMIN;
-    } else if (data.email.includes("seller")) {
-      userRole = UserRole.SELLER;
-    }
+      // Navigate based on the user's role
+      if (user?.role === UserRole.ADMIN) {
+        navigate("/admin/dashboard");
+      } else if (user?.role === UserRole.SELLER) {
+        navigate("/seller/dashboard");
+      } else {
+        navigate("/buyer/dashboard");
+      }
 
-    // Create a mock user object
-    const user = {
-      id: "123",
-      name: "Demo User",
-      email: data.email,
-      username: data.email.split("@")[0],
-      role: userRole,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-
-    // Login the user
-    login(user);
-
-    // Redirect based on the user's role
-    if (userRole === UserRole.ADMIN) {
-      navigate("/admin/dashboard");
-    } else if (userRole === UserRole.SELLER) {
-      navigate("/seller/dashboard");
-    } else {
-      navigate("/buyer/dashboard");
+      // Call onSuccess callback if provided
+      if (onSuccess) {
+        onSuccess();
+      }
     }
   };
 
@@ -117,6 +112,19 @@ const LoginPage: React.FC = () => {
 
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              {/* Display login error if any */}
+              {error && (
+                <div className="p-3 rounded-md bg-red-50 text-red-600 text-sm">
+                  {error}
+                </div>
+              )}
+
+              {successMessage && (
+                <div className="p-3 rounded-md text-sm bg-green-50 text-green-800 border-green-200">
+                  {successMessage}
+                </div>
+              )}
+
               <FormField
                 control={form.control}
                 name="email"
@@ -174,26 +182,19 @@ const LoginPage: React.FC = () => {
                 )}
               />
 
-              {/* Demo Account Hints */}
-              <div className="bg-gray-50 p-3 rounded-lg text-sm text-muted-foreground">
-                <p className="font-medium mb-1">Demo Accounts:</p>
-                <p>
-                  <strong>Admin:</strong> admin@example.com
-                </p>
-                <p>
-                  <strong>Seller:</strong> seller@example.com
-                </p>
-                <p>
-                  <strong>Buyer:</strong> buyer@example.com
-                </p>
-                <p className="mt-1">Use any password to login</p>
-              </div>
-
               <Button
                 type="submit"
-                className="w-full bg-[#3170F3] hover:bg-[#3170F3]/90 cursor-pointer"
+                className="w-full bg-brand-blue hover:bg-brand-blue/90"
+                disabled={isLoading}
               >
-                Sign in
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Signing in...
+                  </>
+                ) : (
+                  "Sign in"
+                )}
               </Button>
             </form>
           </Form>
