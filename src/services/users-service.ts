@@ -37,6 +37,21 @@ const UsersService = {
     // Get dashboard statistics
     async getDashboardStats() {
         return api.get('/users/dashboard-stats');
+    },
+
+    // Get admin dashboard statistics (admin only)
+    async getAdminDashboardStats() {
+        return api.get('/users/admin-dashboard-stats');
+    },
+
+    // Get seller dashboard statistics (seller only)
+    async getSellerDashboardStats() {
+        return api.get('/users/seller-dashboard-stats');
+    },
+
+    // Get buyer dashboard statistics (buyer only)
+    async getBuyerDashboardStats() {
+        return api.get('/users/buyer-dashboard-stats');
     }
 };
 
