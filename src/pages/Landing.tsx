@@ -8,6 +8,9 @@ import {
   Shield,
   Star,
   ChevronDown,
+  CircleDollarSign,
+  Hotel,
+  UserRoundCheck,
 } from "lucide-react";
 import Dating from "@/assets/images/dinner.jpg";
 import { Button } from "@/components/ui/button";
@@ -31,17 +34,17 @@ const LandingPage: React.FC = () => {
           <div className="flex flex-col md:flex-row items-center">
             <div className="md:w-1/2 mb-10 md:mb-0">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-                Find the Perfect Companion for Your Needs
+                Companion
               </h1>
-              <p className="text-lg text-gray-600 mb-8 md:pr-10">
+              {/* <p className="text-lg text-gray-600 mb-8 md:pr-10">
                 Connect with trusted service providers for personalized
                 experiences and solutions. From personal shopping to style
                 consultations, we've got you covered.
-              </p>
+              </p> */}
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link to="/register?role=buyer">
                   <Button size="lg" className="w-full sm:w-auto cursor-pointer">
-                    Find Services
+                    Find Her
                   </Button>
                 </Link>
                 <Link to="/register?role=seller">
@@ -50,7 +53,7 @@ const LandingPage: React.FC = () => {
                     variant="outline"
                     className="w-full sm:w-auto cursor-pointer"
                   >
-                    Become a Provider
+                    Earn
                   </Button>
                 </Link>
               </div>
@@ -108,11 +111,54 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Features */}
+      {/* What we are about */}
       <section className="py-20 bg-white" id="services">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-4">Why Choose Companion?</h2>
+            <h2 className="text-3xl font-bold mb-4">Why Companion?</h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              We are solving these three problems using these solutions.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                icon: (
+                  <CircleDollarSign className="h-10 w-10 text-brand-blue" />
+                ),
+                title: "Flexible Income",
+                description:
+                  "Emporing women with flexible and lucrative Income opportunity.",
+              },
+              {
+                icon: <UserRoundCheck className="h-10 w-10 text-brand-blue" />,
+                title: "Combatting Loneliness for Men",
+                description:
+                  "Allivating feelings of isolation, loneliness amoung men and providing companionship",
+              },
+              {
+                icon: <Hotel className="h-10 w-10 text-brand-blue" />,
+                title: "Revitalizing local Dining the Social Scenes",
+                description:
+                  "Through exclusive discounts at resturants and bars, the app encourages users to explore local venues, boosting patronage and supporting industry.",
+              },
+            ].map((feature, index) => (
+              <div key={index} className="bg-gray-50 p-8 rounded-lg">
+                <div className="mb-4">{feature.icon}</div>
+                <h3 className="text-xl font-semibold mb-3">{feature.title}</h3>
+                <p className="text-gray-600">{feature.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Our Features */}
+      <section className="py-20 bg-white" id="services">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold mb-4">Why Choose US?</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               We connect you with trusted service providers who deliver
               personalized experiences tailored to your needs.
@@ -282,7 +328,7 @@ const LandingPage: React.FC = () => {
                 variant="secondary"
                 className="w-full sm:w-auto cursor-pointer"
               >
-                Find Services
+                Find Her
               </Button>
             </Link>
             <Link to="/register?role=seller">
@@ -291,7 +337,7 @@ const LandingPage: React.FC = () => {
                 variant="outline"
                 className="bg-[#3170F3] border-white text-white hover:bg-[#3170F3]/90 w-full sm:w-auto cursor-pointer"
               >
-                Become a Provider
+                Earn
               </Button>
             </Link>
           </div>
