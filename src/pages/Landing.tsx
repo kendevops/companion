@@ -28,11 +28,6 @@ import "aos/dist/aos.css";
 const LandingPage = () => {
   const images = [girl1, girl3, girl4, girl5];
 
-  // // References for scroll sections
-  // const servicesRef = useRef(null);
-  // const howItWorksRef = useRef(null);
-  // const testimonialsRef = useRef(null);
-
   useEffect(() => {
     // Initialize AOS animation library
     AOS.init({
@@ -301,7 +296,7 @@ const LandingPage = () => {
       </section>
 
       {/* Our Features */}
-      <section className="py-20 bg-white" id="features">
+      <section className="py-20 bg-gray-50" id="features">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16" data-aos="fade-up">
             <h2 className="text-3xl font-bold mb-4">Why Choose US?</h2>
@@ -360,7 +355,7 @@ const LandingPage = () => {
       </section>
 
       {/* How It Works */}
-      <section className="py-20 bg-gray-50" id="how-it-works">
+      <section className="py-20 bg-white" id="how-it-works">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16" data-aos="fade-up">
             <h2 className="text-3xl font-bold mb-4">How It Works</h2>
@@ -439,7 +434,7 @@ const LandingPage = () => {
       </section>
 
       {/* Testimonials */}
-      <section className="py-20 bg-white" id="testimonials">
+      <section className="py-20 bg-gray-50" id="testimonials">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16" data-aos="fade-up">
             <h2 className="text-3xl font-bold mb-4">What Our Users Say</h2>
