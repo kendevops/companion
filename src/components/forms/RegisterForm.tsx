@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Form,
   FormControl,
@@ -15,36 +15,42 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
+} from "@/components/ui/form";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from "@/components/ui/select";
 
-import { useAuthStore } from '@/store/auth-store';
-import { UserRole } from '@/types';
+import { useAuthStore } from "@/store/auth-store";
+import { UserRole } from "@/types";
 
 // 1) Zod schema with confirmPassword + refine
 const registerSchema = z
   .object({
-    name: z.string().min(2, { message: 'Full name must be at least 2 characters' }),
-    email: z.string().email({ message: 'Please enter a valid email address' }),
+    name: z
+      .string()
+      .min(2, { message: "Full name must be at least 2 characters" }),
+    email: z.string().email({ message: "Please enter a valid email address" }),
     username: z
       .string()
-      .min(3, { message: 'Username must be at least 3 characters' })
+      .min(3, { message: "Username must be at least 3 characters" })
       .regex(/^[a-zA-Z0-9_]+$/, {
-        message: 'Username can only contain letters, numbers, and underscores',
+        message: "Username can only contain letters, numbers, and underscores",
       }),
-    password: z.string().min(8, { message: 'Password must be at least 8 characters' }),
-    confirmPassword: z.string().min(1, { message: 'Please confirm your password' }),
-    role: z.nativeEnum(UserRole, { message: 'Please select a valid role' }),
+    password: z
+      .string()
+      .min(8, { message: "Password must be at least 8 characters" }),
+    confirmPassword: z
+      .string()
+      .min(1, { message: "Please confirm your password" }),
+    role: z.nativeEnum(UserRole, { message: "Please select a valid role" }),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: 'Passwords do not match',
-    path: ['confirmPassword'],
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
   });
 
 type RegisterFormValues = z.infer<typeof registerSchema>;
@@ -65,11 +71,11 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      name: '',
-      email: '',
-      username: '',
-      password: '',
-      confirmPassword: '',
+      name: "",
+      email: "",
+      username: "",
+      password: "",
+      confirmPassword: "",
       role: defaultRole,
     },
   });
@@ -82,9 +88,9 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
     if (success) {
       const { user } = useAuthStore.getState();
       if (user?.role === UserRole.SELLER) {
-        navigate('/seller/dashboard');
+        navigate("/seller/dashboard");
       } else {
-        navigate('/buyer/dashboard');
+        navigate("/buyer/dashboard");
       }
     }
   };
@@ -232,12 +238,8 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
                       <SelectValue placeholder="Select your role" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value={UserRole.BUYER}>
-                        Find Services
-                      </SelectItem>
-                      <SelectItem value={UserRole.SELLER}>
-                        Offer Services
-                      </SelectItem>
+                      <SelectItem value={UserRole.BUYER}>Find Her</SelectItem>
+                      <SelectItem value={UserRole.SELLER}>Earn</SelectItem>
                     </SelectContent>
                   </Select>
                 </FormControl>
