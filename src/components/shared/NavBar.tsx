@@ -45,18 +45,30 @@ const Navbar: React.FC = () => {
 
           {/* Desktop Menu */}
           <nav className="hidden md:flex ml-10 space-x-6">
-            <a href="#services" className="text-sm font-medium text-gray-600 hover:text-gray-900">
+            <a
+              href="#services"
+              className="text-sm font-medium text-gray-600 hover:text-gray-900"
+            >
               Services
             </a>
-            <a href="#how-it-works" className="text-sm font-medium text-gray-600 hover:text-gray-900">
+            <a
+              href="#how-it-works"
+              className="text-sm font-medium text-gray-600 hover:text-gray-900"
+            >
               How It Works
             </a>
-            <a href="#testimonials" className="text-sm font-medium text-gray-600 hover:text-gray-900">
+            <a
+              href="#testimonials"
+              className="text-sm font-medium text-gray-600 hover:text-gray-900"
+            >
               Testimonials
             </a>
-            <a href="#pricing" className="text-sm font-medium text-gray-600 hover:text-gray-900">
-              Pricing
-            </a>
+            <Link
+              to={"/landing"}
+              className="block text-sm font-medium text-gray-700 hover:text-gray-900"
+            >
+              New Design
+            </Link>
           </nav>
         </div>
 
@@ -100,18 +112,36 @@ const Navbar: React.FC = () => {
           />
           {/* Menu */}
           <div className="absolute top-0 left-0 bg-white right-0 z-50 p-6 w-11/12 max-w-sm mx-auto mt-24 rounded-lg shadow-xl space-y-4">
-            <a href="#services" className="block text-sm font-medium text-gray-700 hover:text-gray-900">
+            <a
+              href="#services"
+              className="block text-sm font-medium text-gray-700 hover:text-gray-900"
+            >
               Services
             </a>
-            <a href="#how-it-works" className="block text-sm font-medium text-gray-700 hover:text-gray-900">
+            <a
+              href="#how-it-works"
+              className="block text-sm font-medium text-gray-700 hover:text-gray-900"
+            >
               How It Works
             </a>
-            <a href="#testimonials" className="block text-sm font-medium text-gray-700 hover:text-gray-900">
+            <a
+              href="#testimonials"
+              className="block text-sm font-medium text-gray-700 hover:text-gray-900"
+            >
               Testimonials
             </a>
-            <a href="#pricing" className="block text-sm font-medium text-gray-700 hover:text-gray-900">
+            {/* <a
+              href="#pricing"
+              className="block text-sm font-medium text-gray-700 hover:text-gray-900"
+            >
               Pricing
-            </a>
+            </a> */}
+            <Link
+              to={"/landing"}
+              className="block text-sm font-medium text-gray-700 hover:text-gray-900"
+            >
+              New Design
+            </Link>
 
             <div className="flex flex-col gap-2 pt-4 border-t">
               {loggedIn ? (
