@@ -1,7 +1,6 @@
-import React from "react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
-  //   Check,
   ArrowRight,
   Users,
   ShoppingBag,
@@ -21,48 +20,137 @@ import girl4 from "@/assets/images/girl4.jpg";
 import girl5 from "@/assets/images/girl5.jpg";
 import Navbar from "@/components/shared/NavBar";
 
-const LandingPage: React.FC = () => {
+// Import animation libraries
+import { motion } from "framer-motion";
+import AOS from "aos";
+import "aos/dist/aos.css";
+
+const LandingPage = () => {
   const images = [girl1, girl3, girl4, girl5];
 
+  useEffect(() => {
+    // Initialize AOS animation library
+    AOS.init({
+      duration: 800,
+      once: false,
+      mirror: true,
+    });
+
+    // Smooth scroll implementation
+    const smoothScroll = (e: Event, target: string) => {
+      e.preventDefault();
+      const element = document.getElementById(target);
+      if (element) {
+        window.scrollTo({
+          top: element.offsetTop - 80, // Offset for navbar
+          behavior: "smooth",
+        });
+      }
+    };
+
+    // Add event listeners to navigation links
+    document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+      anchor.addEventListener("click", (e) => {
+        const href = anchor.getAttribute("href");
+        const target = href ? href.substring(1) : "";
+        smoothScroll(e, target);
+      });
+    });
+
+    // Cleanup function
+    return () => {
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.removeEventListener("click", (e) => {
+          const href = anchor.getAttribute("href");
+          const target = href ? href.substring(1) : "";
+          smoothScroll(e, target);
+        });
+      });
+    };
+  }, []);
+
+  // Animation variants for framer-motion
+  const fadeIn = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+  };
+
+  const staggerContainer = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+      },
+    },
+  };
+
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen overflow-hidden">
       {/* Navbar */}
       <Navbar />
+
       {/* Hero Section */}
-      <section className="relative py-20 bg-gradient-to-br from-brand-blue/10 to-white">
+      <motion.section
+        className="relative py-20 bg-gradient-to-br from-brand-blue/10 to-white overflow-hidden"
+        initial="hidden"
+        animate="visible"
+        variants={fadeIn}
+      >
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center">
-            <div className="md:w-1/2 mb-10 md:mb-0">
+            <motion.div
+              className="md:w-1/2 mb-10 md:mb-0"
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+            >
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
                 Companion
               </h1>
-              {/* <p className="text-lg text-gray-600 mb-8 md:pr-10">
-                Connect with trusted service providers for personalized
-                experiences and solutions. From personal shopping to style
-                consultations, we've got you covered.
-              </p> */}
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link to="/register?role=buyer">
-                  <Button size="lg" className="w-full sm:w-auto cursor-pointer">
-                    Find Her
-                  </Button>
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Button
+                      size="lg"
+                      className="w-full sm:w-auto cursor-pointer"
+                    >
+                      Find Her
+                    </Button>
+                  </motion.div>
                 </Link>
                 <Link to="/register?role=seller">
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="w-full sm:w-auto cursor-pointer"
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                   >
-                    Earn
-                  </Button>
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="w-full sm:w-auto cursor-pointer"
+                    >
+                      Earn
+                    </Button>
+                  </motion.div>
                 </Link>
               </div>
 
-              <div className="mt-8 flex items-center">
+              <motion.div
+                className="mt-8 flex items-center"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5, duration: 0.8 }}
+              >
                 <div className="flex -space-x-2">
                   {images.map((img, index) => (
-                    <div
+                    <motion.div
                       key={index}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.2 * index, duration: 0.5 }}
                       className="w-8 h-8 rounded-full bg-gray-200 border-2 border-white flex items-center justify-center overflow-hidden"
                     >
                       <img
@@ -70,58 +158,93 @@ const LandingPage: React.FC = () => {
                         alt={`Avatar ${index + 1}`}
                         className="w-full h-full object-cover"
                       />
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
                 <div className="ml-3">
                   <p className="text-sm font-medium">Join 2000+ users</p>
                   <div className="flex items-center mt-1">
                     {[1, 2, 3, 4, 5].map((i) => (
-                      <Star
+                      <motion.div
                         key={i}
-                        size={14}
-                        className="text-yellow-400"
-                        fill="currentColor"
-                      />
+                        initial={{ opacity: 0, scale: 0 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.1 * i, duration: 0.3 }}
+                      >
+                        <Star
+                          size={14}
+                          className="text-yellow-400"
+                          fill="currentColor"
+                        />
+                      </motion.div>
                     ))}
                     <span className="ml-1 text-sm">4.9 (300+ reviews)</span>
                   </div>
                 </div>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
 
-            <div className="md:w-1/2">
-              <div className="relative rounded-lg overflow-hidden shadow-xl">
+            <motion.div
+              className="md:w-1/2"
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+            >
+              <motion.div
+                className="relative rounded-lg overflow-hidden shadow-xl"
+                whileHover={{
+                  scale: 1.02,
+                  boxShadow:
+                    "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+                }}
+                transition={{ duration: 0.3 }}
+              >
                 <img
                   src={Dating}
                   alt="Companion application preview"
                   className="w-full h-auto"
                 />
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           </div>
         </div>
 
         {/* Scroll indicator */}
-        <div className="absolute bottom-5 left-1/2 transform -translate-x-1/2 flex flex-col items-center">
+        <motion.div
+          className="absolute bottom-5 left-1/2 transform -translate-x-1/2 flex flex-col items-center cursor-pointer"
+          animate={{ y: [0, 10, 0] }}
+          transition={{ repeat: Infinity, duration: 1.5 }}
+          onClick={() => {
+            const servicesElement = document.getElementById("services");
+            if (servicesElement) {
+              servicesElement.scrollIntoView({ behavior: "smooth" });
+            }
+          }}
+        >
           <span className="text-sm font-medium text-gray-500 mb-2">
             Scroll to explore
           </span>
-          <ChevronDown className="w-6 h-6 text-gray-400 animate-bounce" />
-        </div>
-      </section>
+          <ChevronDown className="w-6 h-6 text-gray-400" />
+        </motion.div>
+      </motion.section>
 
       {/* What we are about */}
       <section className="py-20 bg-white" id="services">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
+          <div className="text-center mb-16" data-aos="fade-up">
             <h2 className="text-3xl font-bold mb-4">Why Companion?</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               We are solving these three problems using these solutions.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-3 gap-8"
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+          >
             {[
               {
                 icon: (
@@ -129,35 +252,53 @@ const LandingPage: React.FC = () => {
                 ),
                 title: "Flexible Income",
                 description:
-                  "Emporing women with flexible and lucrative Income opportunity.",
+                  "Empowering women with flexible and lucrative income opportunities.",
               },
               {
                 icon: <UserRoundCheck className="h-10 w-10 text-brand-blue" />,
                 title: "Combatting Loneliness for Men",
                 description:
-                  "Allivating feelings of isolation, loneliness amoung men and providing companionship",
+                  "Alleviating feelings of isolation and loneliness among men by providing companionship.",
               },
               {
                 icon: <Hotel className="h-10 w-10 text-brand-blue" />,
-                title: "Revitalizing local Dining the Social Scenes",
+                title: "Revitalizing Local Dining & Social Scenes",
                 description:
-                  "Through exclusive discounts at resturants and bars, the app encourages users to explore local venues, boosting patronage and supporting industry.",
+                  "Through exclusive discounts at restaurants and bars, we encourage users to explore local venues, boosting patronage and supporting the industry.",
               },
             ].map((feature, index) => (
-              <div key={index} className="bg-gray-50 p-8 rounded-lg">
-                <div className="mb-4">{feature.icon}</div>
+              <motion.div
+                key={index}
+                className="bg-gray-50 p-8 rounded-lg"
+                variants={fadeIn}
+                whileHover={{
+                  y: -10,
+                  boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
+                }}
+                transition={{ duration: 0.3 }}
+                data-aos="fade-up"
+                data-aos-delay={100 * index}
+              >
+                <motion.div
+                  className="mb-4"
+                  initial={{ scale: 0 }}
+                  whileInView={{ scale: 1 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  {feature.icon}
+                </motion.div>
                 <h3 className="text-xl font-semibold mb-3">{feature.title}</h3>
                 <p className="text-gray-600">{feature.description}</p>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Our Features */}
-      <section className="py-20 bg-white" id="services">
+      <section className="py-20 bg-gray-50" id="features">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
+          <div className="text-center mb-16" data-aos="fade-up">
             <h2 className="text-3xl font-bold mb-4">Why Choose US?</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               We connect you with trusted service providers who deliver
@@ -186,20 +327,37 @@ const LandingPage: React.FC = () => {
                   "Your payments are protected and only released when you're satisfied.",
               },
             ].map((feature, index) => (
-              <div key={index} className="bg-gray-50 p-8 rounded-lg">
-                <div className="mb-4">{feature.icon}</div>
+              <motion.div
+                key={index}
+                className="bg-gray-50 p-8 rounded-lg"
+                data-aos="flip-up"
+                data-aos-delay={100 * index}
+                whileHover={{
+                  scale: 1.05,
+                  boxShadow:
+                    "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+                }}
+              >
+                <motion.div
+                  className="mb-4"
+                  initial={{ rotate: 0 }}
+                  whileHover={{ rotate: 15, scale: 1.2 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {feature.icon}
+                </motion.div>
                 <h3 className="text-xl font-semibold mb-3">{feature.title}</h3>
                 <p className="text-gray-600">{feature.description}</p>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
       {/* How It Works */}
-      <section className="py-20 bg-gray-50" id="how-it-works">
+      <section className="py-20 bg-white" id="how-it-works">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
+          <div className="text-center mb-16" data-aos="fade-up">
             <h2 className="text-3xl font-bold mb-4">How It Works</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Getting started with Companion is easy. Follow these simple steps
@@ -234,30 +392,51 @@ const LandingPage: React.FC = () => {
                   "Get access to provider contact details and enjoy your service.",
               },
             ].map((step, index) => (
-              <div key={index} className="relative">
-                <div className="bg-white p-8 rounded-lg shadow-sm h-full">
-                  <div className="text-4xl font-bold text-brand-blue/20 mb-4">
+              <motion.div
+                key={index}
+                className="relative"
+                data-aos="zoom-in"
+                data-aos-delay={150 * index}
+              >
+                <motion.div
+                  className="bg-white p-8 rounded-lg shadow-sm h-full"
+                  whileHover={{
+                    y: -10,
+                    boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
+                  }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <motion.div
+                    className="text-4xl font-bold text-brand-blue/20 mb-4"
+                    initial={{ opacity: 0, scale: 0.5 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5 }}
+                  >
                     {step.step}
-                  </div>
+                  </motion.div>
                   <h3 className="text-xl font-semibold mb-3">{step.title}</h3>
                   <p className="text-gray-600">{step.description}</p>
-                </div>
+                </motion.div>
 
                 {index < 3 && (
-                  <div className="hidden md:block absolute top-1/2 right-0 transform translate-x-1/2 -translate-y-1/2">
+                  <motion.div
+                    className="hidden md:block absolute top-1/2 right-0 transform translate-x-1/2 -translate-y-1/2"
+                    animate={{ x: [0, 10, 0] }}
+                    transition={{ repeat: Infinity, duration: 1.5 }}
+                  >
                     <ArrowRight className="h-6 w-6 text-gray-300" />
-                  </div>
+                  </motion.div>
                 )}
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
       {/* Testimonials */}
-      <section className="py-20 bg-white" id="testimonials">
+      <section className="py-20 bg-gray-50" id="testimonials">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
+          <div className="text-center mb-16" data-aos="fade-up">
             <h2 className="text-3xl font-bold mb-4">What Our Users Say</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Don't just take our word for it. Here's what our users have to say
@@ -289,15 +468,32 @@ const LandingPage: React.FC = () => {
                 rating: 4,
               },
             ].map((testimonial, index) => (
-              <div key={index} className="bg-gray-50 p-8 rounded-lg">
+              <motion.div
+                key={index}
+                className="bg-gray-50 p-8 rounded-lg"
+                data-aos="fade-up"
+                data-aos-delay={100 * index}
+                whileHover={{
+                  scale: 1.03,
+                  boxShadow:
+                    "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+                }}
+                transition={{ duration: 0.3 }}
+              >
                 <div className="flex items-center mb-4">
                   {[...Array(5)].map((_, i) => (
-                    <Star
+                    <motion.div
                       key={i}
-                      size={18}
-                      className="text-yellow-400 mr-1"
-                      fill={i < testimonial.rating ? "currentColor" : "none"}
-                    />
+                      initial={{ opacity: 0, scale: 0 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.1 * i, duration: 0.3 }}
+                    >
+                      <Star
+                        size={18}
+                        className="text-yellow-400 mr-1"
+                        fill={i < testimonial.rating ? "currentColor" : "none"}
+                      />
+                    </motion.div>
                   ))}
                 </div>
                 <p className="text-gray-600 italic mb-6">
@@ -307,67 +503,96 @@ const LandingPage: React.FC = () => {
                   <p className="font-semibold">{testimonial.name}</p>
                   <p className="text-sm text-gray-500">{testimonial.role}</p>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
       {/* CTA */}
-      <section className="py-20 bg-brand-blue text-black">
+      <motion.section
+        className="py-20 bg-brand-blue text-black"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+        viewport={{ once: true }}
+      >
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-6">Ready to Get Started?</h2>
-          <p className="text-xl mb-8 max-w-2xl mx-auto">
-            Join thousands of users who have found the perfect service providers
-            for their needs.
-          </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Link to="/register?role=buyer">
-              <Button
-                size="lg"
-                variant="secondary"
-                className="w-full sm:w-auto cursor-pointer"
-              >
-                Find Her
-              </Button>
-            </Link>
-            <Link to="/register?role=seller">
-              <Button
-                size="lg"
-                variant="outline"
-                className="bg-[#3170F3] border-white text-white hover:bg-[#3170F3]/90 w-full sm:w-auto cursor-pointer"
-              >
-                Earn
-              </Button>
-            </Link>
-          </div>
+          <motion.div data-aos="zoom-in" className="max-w-4xl mx-auto">
+            <h2 className="text-3xl font-bold mb-6">Ready to Get Started?</h2>
+            <p className="text-xl mb-8 max-w-2xl mx-auto">
+              Join thousands of users who have found the perfect service
+              providers for their needs.
+            </p>
+            <div className="flex flex-col sm:flex-row justify-center gap-4">
+              <Link to="/register?role=buyer">
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Button
+                    size="lg"
+                    variant="secondary"
+                    className="w-full sm:w-auto cursor-pointer"
+                  >
+                    Find Her
+                  </Button>
+                </motion.div>
+              </Link>
+              <Link to="/register?role=seller">
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="bg-[#3170F3] border-white text-white hover:bg-[#3170F3]/90 w-full sm:w-auto cursor-pointer"
+                  >
+                    Earn
+                  </Button>
+                </motion.div>
+              </Link>
+            </div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
               <h3 className="text-xl font-bold mb-4">Companion</h3>
               <p className="text-gray-400">
                 Connecting you with trusted service providers for personalized
                 experiences.
               </p>
-            </div>
+            </motion.div>
 
-            <div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+            >
               <h4 className="font-semibold mb-4">Quick Links</h4>
               <ul className="space-y-2">
                 <li>
-                  <a href="#" className="text-gray-400 hover:text-white">
+                  <a
+                    href="#"
+                    className="text-gray-400 hover:text-white transition-colors duration-300"
+                  >
                     Home
                   </a>
                 </li>
                 <li>
                   <a
                     href="#services"
-                    className="text-gray-400 hover:text-white"
+                    className="text-gray-400 hover:text-white transition-colors duration-300"
                   >
                     Services
                   </a>
@@ -375,7 +600,7 @@ const LandingPage: React.FC = () => {
                 <li>
                   <a
                     href="#how-it-works"
-                    className="text-gray-400 hover:text-white"
+                    className="text-gray-400 hover:text-white transition-colors duration-300"
                   >
                     How It Works
                   </a>
@@ -383,42 +608,59 @@ const LandingPage: React.FC = () => {
                 <li>
                   <a
                     href="#testimonials"
-                    className="text-gray-400 hover:text-white"
+                    className="text-gray-400 hover:text-white transition-colors duration-300"
                   >
                     Testimonials
                   </a>
                 </li>
               </ul>
-            </div>
+            </motion.div>
 
-            <div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
               <h4 className="font-semibold mb-4">Legal</h4>
               <ul className="space-y-2">
                 <li>
-                  <a href="#" className="text-gray-400 hover:text-white">
+                  <a
+                    href="#"
+                    className="text-gray-400 hover:text-white transition-colors duration-300"
+                  >
                     Terms of Service
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-400 hover:text-white">
+                  <a
+                    href="#"
+                    className="text-gray-400 hover:text-white transition-colors duration-300"
+                  >
                     Privacy Policy
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-400 hover:text-white">
+                  <a
+                    href="#"
+                    className="text-gray-400 hover:text-white transition-colors duration-300"
+                  >
                     Cookie Policy
                   </a>
                 </li>
               </ul>
-            </div>
+            </motion.div>
 
-            <div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+            >
               <h4 className="font-semibold mb-4">Contact</h4>
               <ul className="space-y-2">
                 <li className="text-gray-400">support@companionapp.com</li>
                 <li className="text-gray-400">+1 (555) 123-4567</li>
               </ul>
-            </div>
+            </motion.div>
           </div>
 
           <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400 text-sm">
