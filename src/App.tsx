@@ -18,7 +18,6 @@ import BuyerLayout from "@/components/layout/buyer/BuyerLayout";
 
 // Main pages for each role
 import LandingPage from "@/pages/Landing";
-import LandingPage2 from "@/pages/LandingPage";
 import AdminDashboard from "@/pages/admin/Dashboard";
 import SellerDashboard from "@/pages/seller/Dashboard";
 import BuyerDashboard from "@/pages/buyer/Dashboard";
@@ -39,7 +38,6 @@ const App: React.FC = () => {
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<LandingPage />} />
-          <Route path="/landing" element={<LandingPage2 />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
