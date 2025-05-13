@@ -299,7 +299,7 @@ const LandingPage = () => {
             {[
               {
                 icon: <Users className="h-5 w-5" />,
-                text: "2,000+ Active Users",
+                text: "100+ Active Users",
               },
               {
                 icon: <Globe className="h-5 w-5" />,
