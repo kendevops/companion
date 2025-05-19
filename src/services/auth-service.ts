@@ -23,6 +23,11 @@ interface ResetPasswordData {
     password: string;
 }
 
+interface OnboardingStatus {
+    required: boolean;
+    nextStep: string | null;
+}
+
 interface AuthResponse {
     access_token: string;
     user: {
@@ -34,6 +39,7 @@ interface AuthResponse {
         username: string;
         role: UserRole;
     };
+    onboarding: OnboardingStatus;
 }
 
 const AuthService = {

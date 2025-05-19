@@ -30,6 +30,7 @@ export interface Seller extends User {
     services: Service[];
     contactDetails: ContactDetails;
     verified: boolean;
+    onboardingCompleted: boolean;
     rating: number;
     reviews: Review[];
 }

@@ -85,9 +85,9 @@ const BuyerDashboard: React.FC = () => {
   return (
     <div className="container mx-auto">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Find Services</h1>
+        <h1 className="text-3xl font-bold mb-2">Find Her!</h1>
         <p className="text-muted-foreground">
-          Discover the perfect service providers for your needs
+          Discover the perfect Companion
         </p>
       </div>
 
@@ -126,7 +126,7 @@ const BuyerDashboard: React.FC = () => {
       {loading && (
         <div className="flex justify-center items-center py-12">
           <Loader2 className="h-8 w-8 animate-spin text-brand-blue" />
-          <span className="ml-2 text-lg">Loading sellers...</span>
+          <span className="ml-2 text-lg">Loading beautiful companions...</span>
         </div>
       )}
 

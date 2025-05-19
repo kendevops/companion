@@ -200,8 +200,8 @@ const mockServices: (Service & {
 // Categories for filtering
 const categories = [
   "All Categories",
-  "Fashion & Style",
-  "Travel & Experiences",
+  "Video Call",
+  "Resturant Date",
   "Education & Skills",
   "Fitness & Health",
   "Home & Lifestyle",

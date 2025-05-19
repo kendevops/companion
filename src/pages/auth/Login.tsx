@@ -64,16 +64,21 @@ const LoginPage: React.FC<LoginFormProps> = ({ onSuccess }) => {
 
     if (success) {
       // Get the user from the store
-      const { user } = useAuthStore.getState();
+      const { user, onboardingRequired, onboardingStep } =
+        useAuthStore.getState();
+      console.log("Onboarding Required:", onboardingRequired);
+      console.log("Onboarding Step:", onboardingStep);
 
-      // Navigate based on the user's role
-      if (user?.role === UserRole.ADMIN) {
-        navigate("/admin/dashboard");
-      } else if (user?.role === UserRole.SELLER) {
-        navigate("/seller/dashboard");
-      } else {
-        navigate("/buyer/dashboard");
-      }
+        if (user?.role === UserRole.SELLER && onboardingRequired) {
+          // If user is a seller and onboarding is required, redirect to onboarding
+          navigate(`/onboarding/${onboardingStep || "profile"}`);
+        } else if (user?.role === UserRole.ADMIN) {
+          navigate("/admin/dashboard");
+        } else if (user?.role === UserRole.SELLER) {
+          navigate("/seller/dashboard");
+        } else {
+          navigate("/buyer/dashboard");
+        }
 
       // Call onSuccess callback if provided
       if (onSuccess) {

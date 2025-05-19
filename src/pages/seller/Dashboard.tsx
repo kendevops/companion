@@ -372,6 +372,7 @@ const SellerDashboard: React.FC = () => {
 
         // Fetch recent purchases
         const purchasesResponse = await PurchasesService.getAllPurchases();
+        console.log("raw purchasesResponse.data:", purchasesResponse.data);
         setRecentRequests(purchasesResponse.data.slice(0, 5)); // Just take the first 5
       } catch (err: any) {
         console.error("Error fetching dashboard data:", err);
@@ -406,7 +407,9 @@ const SellerDashboard: React.FC = () => {
 
   // Calculate completion rate
   const completionRate = stats ? stats.completionRate : 0;
-
+  const pendingCount = Array.isArray(recentRequests)
+    ? recentRequests.filter((r) => r.status === PurchaseStatus.PENDING).length
+    : 0;
   return (
     <div className="space-y-6">
       {/* Dashboard Header */}
@@ -507,11 +510,7 @@ const SellerDashboard: React.FC = () => {
             <CardTitle>Recent Requests</CardTitle>
             <CardDescription>
               You have{" "}
-              {
-                recentRequests.filter(
-                  (r) => r.status === PurchaseStatus.PENDING
-                ).length
-              }{" "}
+              {pendingCount}{" "}
               pending requests
             </CardDescription>
           </div>
