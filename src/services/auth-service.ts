@@ -31,6 +31,7 @@ interface OnboardingStatus {
 interface AuthResponse {
     access_token: string;
     user: {
+        onboardingRequired: boolean;
         createdAt: string;
         updatedAt: string;
         id: string;

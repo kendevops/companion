@@ -4,7 +4,6 @@ import { persist } from 'zustand/middleware';
 import { AuthState, User, UserRole } from '@/types';
 import AuthService from '@/services/auth-service';
 import { toast } from "react-hot-toast";
-import OnboardingService from '@/services/onboarding-service';
 
 // Define the auth store interface
 interface AuthStore extends AuthState {
@@ -14,8 +13,7 @@ interface AuthStore extends AuthState {
     logout: () => void;
     updateUser: (user: Partial<User>) => void;
     registerUser: (data: any) => Promise<boolean>;
-    loginUser: (data: any) => Promise<boolean>;
-    setOnboardingComplete: () => void;
+    loginUser: (data: any) => Promise<{ success: boolean; user: User | null; }>;
 }
 
 // Create the auth store with persistence
@@ -55,7 +53,8 @@ export const useAuthStore = create<AuthStore>()(
                         user: {
                             ...response.user,
                             createdAt: response.user.createdAt || new Date().toISOString(),
-                            updatedAt: response.user.updatedAt || new Date().toISOString()
+                            updatedAt: response.user.updatedAt || new Date().toISOString(),
+                            onboardingRequired: false
                         },
                         onboardingRequired: response.onboarding?.required || false,
                         onboardingStep: response.onboarding?.nextStep || null,
@@ -78,59 +77,25 @@ export const useAuthStore = create<AuthStore>()(
                 set({ isLoading: true, error: null });
                 try {
                     const response = await AuthService.login(data);
-                    console.log('Login response:', response);
-                    set({
-                        user: response.user,
-                        isLoading: true, // Keep loading while we check onboarding
-                    });
+                    const user: User = {
+                        ...response.user,
+                        onboardingRequired: response.user.onboardingRequired ?? false,
+                        createdAt: response.user.createdAt || new Date().toISOString(),
+                        updatedAt: response.user.updatedAt || new Date().toISOString(),
+                    };
+                    set({ user, isLoading: false });
+                    toast.success(`Welcome back, ${user.name}!`);
 
-                    // If user is a seller, check onboarding status
-                    if (response.user.role === UserRole.SELLER) {
-                        try {
-                            // Use the OnboardingService to get the status
-                            const onboardingResponse = await OnboardingService.getOnboardingStatus();
-                            console.log('Onboarding status:', onboardingResponse.data);
-
-                            set({
-                                isLoading: false,
-                                onboardingRequired: !onboardingResponse.data.completed,
-                                onboardingStep: onboardingResponse.data.nextStep || 'profile'
-                            });
-                        } catch (onboardingError) {
-                            console.error('Failed to fetch onboarding status:', onboardingError);
-                            // Default to requiring onboarding for sellers if check fails
-                            set({
-                                isLoading: false,
-                                onboardingRequired: true,
-                                onboardingStep: 'profile' // Default to first step
-                            });
-                        }
-                    } else {
-                        // For non-sellers, just finish loading
-                        set({
-                            isLoading: false,
-                            onboardingRequired: false,
-                            onboardingStep: null
-                        });
-                    }
-                    toast.success(`Welcome back, ${response.user.name}!`);
-                    return true;
+                    // Return user data including onboarding status
+                    return { success: true, user };
                 } catch (error: any) {
                     set({
                         isLoading: false,
                         error: error.response?.data?.message || 'Login failed'
                     });
-                    setTimeout(() => set({ error: null }), 1000);
-                    return false;
+                    return { success: false, user: null };
                 }
             },
-            // Mark onboarding as complete
-            setOnboardingComplete: () => {
-                set({
-                    onboardingRequired: false,
-                    onboardingStep: null
-                });
-            }
         }),
         {
             name: 'auth-storage', // localStorage key
@@ -148,16 +113,4 @@ export const isAuthenticated = () => {
 export const hasRole = (role: UserRole) => {
     const { user } = useAuthStore.getState();
     return user?.role === role;
-};
-
-// Helper to check if onboarding is required
-export const isOnboardingRequired = () => {
-    const { onboardingRequired } = useAuthStore.getState();
-    return onboardingRequired;
-};
-
-// Helper to get the next onboarding step
-export const getOnboardingStep = () => {
-    const { onboardingStep } = useAuthStore.getState();
-    return onboardingStep;
 };

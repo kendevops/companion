@@ -15,6 +15,8 @@ export interface User {
     createdAt: string;
     updatedAt: string;
     profilePictures?: string[];
+    onboardingRequired?: boolean;
+
 
 }
 
@@ -27,6 +29,7 @@ export interface Admin extends User {
 export interface Seller extends User {
     role: UserRole.SELLER;
     profilePictures: string[];
+    bio?: string;
     services: Service[];
     contactDetails: ContactDetails;
     verified: boolean;

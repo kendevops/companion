@@ -88,7 +88,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
     if (success) {
       const { user } = useAuthStore.getState();
       if (user?.role === UserRole.SELLER) {
-        navigate("/seller/dashboard");
+        navigate("/seller/onboarding");
       } else {
         navigate("/buyer/dashboard");
       }

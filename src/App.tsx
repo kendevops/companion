@@ -27,9 +27,8 @@ import SellerBookings from "./pages/seller/Bookings";
 import AccountSettings from "@/pages/Settings";
 import SellerServices from "./pages/seller/SellerServices";
 import SellerProfile from "./pages/seller/SellerProfile";
-import OnboardingLayout from "@/pages/onboarding/OnboardingLayout";
-import ProfileSetup from "@/pages/onboarding/ProfileSetup";
-import ServicesSetup from "@/pages/onboarding/ServicesSetup";
+import OnboardingPage from "@/pages/seller/Onboarding";
+
 
 // Create a client for React Query
 const queryClient = new QueryClient();
@@ -70,14 +69,7 @@ const App: React.FC = () => {
           </Route>
 
           {/* Onboarding Routes */}
-          <Route path="/onboarding" element={<OnboardingLayout />}>
-            <Route
-              index
-              element={<Navigate to="/onboarding/profile" replace />}
-            />
-            <Route path="profile" element={<ProfileSetup />} />
-            <Route path="services" element={<ServicesSetup />} />
-          </Route>
+          <Route path="/seller/onboarding" element={<OnboardingPage />} />
 
           {/* Buyer Routes - Protected */}
           {/* <Route path="/buyer" element={<BuyerLayout />}>

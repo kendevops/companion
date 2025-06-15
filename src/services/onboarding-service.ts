@@ -1,46 +1,77 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import api from './api';
 
-interface SellerProfileData {
-    bio?: string;
-    profilePictures: string[];
-    contactDetails: {
-        phoneNumber: string;
-        instagram?: string;
-        wechat?: string;
+interface OnboardingStatus {
+    completed: boolean;
+    steps: {
+        profileDetails: boolean;
+        serviceSelection: boolean;
     };
+    seller: any;
 }
 
-interface ServiceData {
-    title: string;
+interface UpdateProfileData {
+    bio?: string;
+    phoneNumber?: string;
+    instagram?: string;
+    wechat?: string;
+    profilePictures?: string[];
+}
+
+interface PredefinedService {
+    id: string;
+    name: string;
     description: string;
-    price: number;
-    isAvailable?: boolean;
+    category: string;
+    basePrice: number;
+    isActive: boolean;
 }
 
-interface SellerServicesData {
-    services: ServiceData[];
+interface CreateServiceData {
+    predefinedServiceId: string;
+    title: string;
+    description?: string;
+    price?: number;
 }
 
 const OnboardingService = {
-    // Get the current onboarding status
-    async getOnboardingStatus() {
-        return api.get('/onboarding/status');
+    // Get onboarding status
+    async getOnboardingStatus(): Promise<OnboardingStatus> {
+        const response = await api.get('/onboarding/status');
+        return response.data;
     },
 
-    // Update seller profile
-    async updateSellerProfile(data: SellerProfileData) {
-        return api.post('/onboarding/profile', data);
+    // Update seller profile (Step 1)
+    async updateSellerProfile(data: UpdateProfileData) {
+        const response = await api.patch('/onboarding/profile', data);
+        return response.data;
     },
 
-    // Add seller services
-    async addSellerServices(data: SellerServicesData) {
-        return api.post('/onboarding/services', data);
+    // Get predefined services
+    async getPredefinedServices(): Promise<PredefinedService[]> {
+        const response = await api.get('/onboarding/predefined-services');
+        return response.data;
     },
 
-    // Complete the onboarding process
-    async completeOnboarding(completed: boolean = true) {
-        return api.post('/onboarding/complete', { completed });
-    }
+    // Select services (bulk approach)
+    async selectServices(predefinedServiceIds: string[]) {
+        const response = await api.post('/onboarding/select-services', {
+            predefinedServiceIds,
+        });
+        return response.data;
+    },
+
+    // Create services from predefined (detailed approach)
+    async createServicesFromPredefined(servicesData: CreateServiceData[]) {
+        const response = await api.post('/onboarding/create-services', servicesData);
+        return response.data;
+    },
+
+    // Complete onboarding
+    async completeOnboarding() {
+        const response = await api.post('/onboarding/complete');
+        return response.data;
+    },
 };
 
 export default OnboardingService;

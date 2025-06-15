@@ -59,26 +59,54 @@ const LoginPage: React.FC<LoginFormProps> = ({ onSuccess }) => {
     },
   });
 
+  // const onSubmit = async (data: LoginFormValues) => {
+  //   const success = await loginUser(data);
+
+  //   if (success) {
+  //     // Get the user from the store
+  //     const { user, onboardingRequired, onboardingStep } =
+  //       useAuthStore.getState();
+  //     console.log("Onboarding Required:", onboardingRequired);
+  //     console.log("Onboarding Step:", onboardingStep);
+
+  //       if (user?.role === UserRole.SELLER && onboardingRequired) {
+  //         // If user is a seller and onboarding is required, redirect to onboarding
+  //         navigate(`/onboarding/${onboardingStep || "profile"}`);
+  //       } else if (user?.role === UserRole.ADMIN) {
+  //         navigate("/admin/dashboard");
+  //       } else if (user?.role === UserRole.SELLER) {
+  //         navigate("/seller/dashboard");
+  //       } else {
+  //         navigate("/buyer/dashboard");
+  //       }
+
+  //     // Call onSuccess callback if provided
+  //     if (onSuccess) {
+  //       onSuccess();
+  //     }
+  //   }
+  // };
+
   const onSubmit = async (data: LoginFormValues) => {
-    const success = await loginUser(data);
+    const result = await loginUser(data);
 
-    if (success) {
-      // Get the user from the store
-      const { user, onboardingRequired, onboardingStep } =
-        useAuthStore.getState();
-      console.log("Onboarding Required:", onboardingRequired);
-      console.log("Onboarding Step:", onboardingStep);
+    if (result.success && result.user) {
+      const user = result.user;
 
-        if (user?.role === UserRole.SELLER && onboardingRequired) {
-          // If user is a seller and onboarding is required, redirect to onboarding
-          navigate(`/onboarding/${onboardingStep || "profile"}`);
-        } else if (user?.role === UserRole.ADMIN) {
-          navigate("/admin/dashboard");
-        } else if (user?.role === UserRole.SELLER) {
-          navigate("/seller/dashboard");
-        } else {
-          navigate("/buyer/dashboard");
-        }
+      // Check if seller needs onboarding
+      if (user.role === UserRole.SELLER && user.onboardingRequired) {
+        navigate("/seller/onboarding");
+        return;
+      }
+
+      // Navigate based on the user's role
+      if (user.role === UserRole.ADMIN) {
+        navigate("/admin/dashboard");
+      } else if (user.role === UserRole.SELLER) {
+        navigate("/seller/dashboard");
+      } else {
+        navigate("/buyer/dashboard");
+      }
 
       // Call onSuccess callback if provided
       if (onSuccess) {
