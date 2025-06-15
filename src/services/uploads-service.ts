@@ -23,12 +23,24 @@ const UploadsService = {
 
     // Get full URL for uploaded file
     getFileUrl(filename: string) {
-        if (filename.startsWith('http')) {
+        // Handle null, undefined, or empty filename
+        if (!filename || typeof filename !== 'string') {
+            return '';
+        }
+
+        // If it's already a full URL, return as is
+        if (filename.startsWith('http://') || filename.startsWith('https://')) {
             return filename;
         }
 
-        return `${API_URL}${filename}`;
+        // If it already starts with /uploads, prepend API URL
+        if (filename.startsWith('/uploads')) {
+            return `${API_URL.replace('/api', '')}${filename}`;
+        }
+
+        // If it's just a filename, construct the full path
+        return `${API_URL.replace('/api', '')}/uploads/${filename}`;
     }
-};
+  };
 
 export default UploadsService;

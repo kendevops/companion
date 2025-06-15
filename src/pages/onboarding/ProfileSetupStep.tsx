@@ -86,15 +86,25 @@ const ProfileSetupStep: React.FC<ProfileSetupStepProps> = ({ onNext }) => {
           throw new Error(`File ${file.name} is not an image.`);
         }
 
+        console.log("Uploading file:", file.name);
         const response = await UploadsService.uploadProfilePicture(file);
-        uploadedImages.push(response.data.fileUrl);
+        console.log("Upload response:", response.data);
+
+        // Handle different response formats
+        const fileUrl =
+          response.data.fileUrl || response.data.url || response.data.filename;
+        if (fileUrl) {
+          uploadedImages.push(fileUrl);
+        } else {
+          console.error("No file URL in response:", response.data);
+          throw new Error("Upload succeeded but no file URL returned");
+        }
       }
 
-      updateProfileData({
-        profilePictures: [...profileData.profilePictures, ...uploadedImages],
-      });
-
       if (uploadedImages.length > 0) {
+        updateProfileData({
+          profilePictures: [...profileData.profilePictures, ...uploadedImages],
+        });
         toast.success(
           `Successfully uploaded ${uploadedImages.length} image(s)`
         );
@@ -179,22 +189,38 @@ const ProfileSetupStep: React.FC<ProfileSetupStepProps> = ({ onNext }) => {
             </h3>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {profileData.profilePictures.map((image, index) => (
-                <div key={index} className="relative group">
-                  <img
-                    src={UploadsService.getFileUrl(image)}
-                    alt={`Profile ${index + 1}`}
-                    className="w-full h-32 object-cover rounded-lg"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => removeImage(image)}
-                    className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    <X size={16} />
-                  </button>
-                </div>
-              ))}
+              {profileData.profilePictures.map((image, index) => {
+                const imageUrl = UploadsService.getFileUrl(image);
+                return (
+                  <div key={index} className="relative group">
+                    {imageUrl ? (
+                      <img
+                        src={imageUrl}
+                        alt={`Profile ${index + 1}`}
+                        className="w-full h-32 object-cover rounded-lg"
+                        onError={(e) => {
+                          console.error("Image failed to load:", imageUrl);
+                          // Hide broken image
+                          e.currentTarget.style.display = "none";
+                        }}
+                      />
+                    ) : (
+                      <div className="w-full h-32 bg-gray-200 rounded-lg flex items-center justify-center">
+                        <span className="text-gray-400 text-sm">
+                          Invalid image
+                        </span>
+                      </div>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => removeImage(image)}
+                      className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+                );
+              })}
 
               {profileData.profilePictures.length < 4 && (
                 <button
