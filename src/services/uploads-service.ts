@@ -25,7 +25,6 @@ const UploadsService = {
     getFileUrl(filename: string) {
         // Handle null, undefined, or empty filename
         if (!filename || typeof filename !== 'string') {
-            console.warn('Invalid filename provided to getFileUrl:', filename);
             return '';
         }
 
@@ -34,16 +33,17 @@ const UploadsService = {
             return filename;
         }
 
-        // If it already starts with /uploads, prepend base URL (without /api)
+        // Get the base URL without '/api' suffix for static files
+        const baseUrl = API_URL.replace('/api', '');
+
+        // If it already starts with /uploads, prepend base URL
         if (filename.startsWith('/uploads')) {
-            const baseUrl = API_URL.replace('/api', '');
             return `${baseUrl}${filename}`;
         }
 
         // If it's just a filename, construct the full path
-        const baseUrl = API_URL.replace('/api', '');
         return `${baseUrl}/uploads/${filename}`;
-      }
+    }
   };
 
 export default UploadsService;
