@@ -28,6 +28,8 @@ import AccountSettings from "@/pages/Settings";
 import SellerServices from "./pages/seller/SellerServices";
 import SellerProfile from "./pages/seller/SellerProfile";
 import OnboardingPage from "@/pages/seller/Onboarding";
+import ProtectedRoutes from "./components/shared/ProtectedRoute";
+import { UserRole } from "./types";
 
 
 // Create a client for React Query
@@ -68,17 +70,13 @@ const App: React.FC = () => {
             <Route path="settings" element={<AccountSettings />} />
           </Route>
 
-          {/* Onboarding Routes */}
-          <Route path="/seller/onboarding" element={<OnboardingPage />} />
+          <Route element={<ProtectedRoutes allowedRoles={[UserRole.SELLER]} children={undefined} />}>
+            {/* Onboarding route - accessible to sellers but outside main layout */}
+            <Route path="/seller/onboarding" element={<OnboardingPage />} />
+          </Route>
 
-          {/* Buyer Routes - Protected */}
-          {/* <Route path="/buyer" element={<BuyerLayout />}>
-            <Route index element={<Navigate to="/buyer/dashboard" replace />} />
-            <Route path="dashboard" element={<BuyerDashboard />} />
-            <Route path="services" element={<div>Browse Services</div>} />
-            <Route path="sellers" element={<div>Browse Sellers</div>} />
-            <Route path="purchases" element={<div>My Purchases</div>} />
-          </Route> */}
+
+
           <Route path="/buyer" element={<BuyerLayout />}>
             <Route index element={<Navigate to="/buyer/dashboard" replace />} />
             <Route path="dashboard" element={<BuyerDashboard />} />

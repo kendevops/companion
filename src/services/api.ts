@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios';
 import API_URL from './api-config';
 import { toast } from "react-hot-toast";
@@ -30,27 +31,37 @@ api.interceptors.response.use(
         if (error.response) {
             // Authentication errors
             if (error.response.status === 401) {
-                localStorage.removeItem('token');
-                toast.error('Session expired. Please login again.');
-                window.location.href = '/login';
+                // Check if it's an onboarding-related auth error
+                if (error.response.data?.requiresOnboarding) {
+                    // Don't logout, just show the error
+                    toast.error('Please complete your profile setup to continue');
+                } else {
+                    localStorage.removeItem('token');
+                    toast.error('Session expired. Please login again.');
+                    window.location.href = '/login';
+                }
             }
 
             // Authorization errors
             if (error.response.status === 403) {
-                toast.error('You do not have permission to perform this action');
+                if (error.response.data?.requiresOnboarding) {
+                    toast.error('Please complete your seller onboarding first');
+                } else {
+                    toast.error('You do not have permission to perform this action');
+                }
             }
 
             // Validation errors
             if (error.response.status === 400 && error.response.data.errors) {
-                Object.values(error.response.data.errors).forEach((errorMessages) => {
-                    (errorMessages as string[]).forEach((message: string) => {
+                Object.values(error.response.data.errors).forEach((errorMessages: any) => {
+                    errorMessages.forEach((message: string) => {
                         toast.error(message);
                     });
                 });
             }
 
             // Display general error message
-            if (error.response.data.message) {
+            if (error.response.data.message && error.response.status !== 401 && error.response.status !== 403) {
                 toast.error(error.response.data.message);
             }
         } else {

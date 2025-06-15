@@ -1,8 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Upload, X, User, Phone, Instagram, MessageCircle } from "lucide-react";
+import { toast } from "react-hot-toast";
+
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -71,8 +74,17 @@ const ProfileSetupStep: React.FC<ProfileSetupStepProps> = ({ onNext }) => {
 
     try {
       for (const file of Array.from(files)) {
-        const formData = new FormData();
-        formData.append("file", file);
+        // Validate file size (5MB limit)
+        if (file.size > 5 * 1024 * 1024) {
+          throw new Error(
+            `File ${file.name} is too large. Maximum size is 5MB.`
+          );
+        }
+
+        // Validate file type
+        if (!file.type.startsWith("image/")) {
+          throw new Error(`File ${file.name} is not an image.`);
+        }
 
         const response = await UploadsService.uploadProfilePicture(file);
         uploadedImages.push(response.data.fileUrl);
@@ -81,10 +93,28 @@ const ProfileSetupStep: React.FC<ProfileSetupStepProps> = ({ onNext }) => {
       updateProfileData({
         profilePictures: [...profileData.profilePictures, ...uploadedImages],
       });
-    } catch (error) {
+
+      if (uploadedImages.length > 0) {
+        toast.success(
+          `Successfully uploaded ${uploadedImages.length} image(s)`
+        );
+      }
+    } catch (error: any) {
       console.error("Failed to upload images:", error);
+
+      // Show specific error message
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to upload images";
+      toast.error(errorMessage);
     } finally {
       setUploadingImages(false);
+
+      // Clear the input so the same file can be selected again if needed
+      if (event.target) {
+        event.target.value = "";
+      }
     }
   };
 
