@@ -33,17 +33,17 @@ const UploadsService = {
             return filename;
         }
 
-        // Get the base URL without '/api' suffix for static files
+        // Get the base URL without /api
         const baseUrl = API_URL.replace('/api', '');
 
-        // If it already starts with /uploads, prepend base URL
-        if (filename.startsWith('/uploads')) {
+        // If filename starts with /uploads, use it directly
+        if (filename.startsWith('/uploads/')) {
             return `${baseUrl}${filename}`;
         }
 
         // If it's just a filename, construct the full path
         return `${baseUrl}/uploads/${filename}`;
     }
-  };
+};
 
 export default UploadsService;
